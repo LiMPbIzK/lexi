@@ -1,6 +1,16 @@
 # LeXi — AAC Communicator
 
+![LeXi AAC Web Communicator](banner.en.svg)
+
 [English](README.md) | [Español](README.es.md)
+
+![Status: Under development](https://img.shields.io/badge/status-under%20development-orange)
+![License: AGPL-3.0](https://img.shields.io/badge/license-AGPL--3.0-blue)
+![Astro](https://img.shields.io/badge/Astro-5.0-BC52EE?logo=astro&logoColor=white)
+![Svelte](https://img.shields.io/badge/Svelte-latest-FF3E00?logo=svelte&logoColor=white)
+![Cloudflare Pages](https://img.shields.io/badge/Cloudflare%20Pages-000000?logo=cloudflare&logoColor=white)
+![PWA](https://img.shields.io/badge/PWA-enabled-5A0FC8)
+![Spanish](https://img.shields.io/badge/language-es-009150)
 
 > **STATUS: UNDER DEVELOPMENT**
 > This project is under active development. Architecture, data schema, features

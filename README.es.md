@@ -1,6 +1,16 @@
 # LeXi — Comunicador AAC
 
+![LeXi Comunicador Web CAA](banner.es.svg)
+
 [English](README.md) | [Español](README.es.md)
+
+![Estado: en desarrollo](https://img.shields.io/badge/estado-en%20desarrollo-orange)
+![Licencia: AGPL-3.0](https://img.shields.io/badge/licencia-AGPL--3.0-blue)
+![Astro](https://img.shields.io/badge/Astro-5.0-BC52EE?logo=astro&logoColor=white)
+![Svelte](https://img.shields.io/badge/Svelte-última-FF3E00?logo=svelte&logoColor=white)
+![Cloudflare Pages](https://img.shields.io/badge/Cloudflare%20Pages-000000?logo=cloudflare&logoColor=white)
+![PWA](https://img.shields.io/badge/PWA-habilitada-5A0FC8)
+![Español](https://img.shields.io/badge/idioma-es-009150)
 
 > **ESTADO: EN DESARROLLO**
 > Este proyecto se encuentra en fase activa de desarrollo. La arquitectura, el

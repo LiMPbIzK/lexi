@@ -1,104 +1,106 @@
-# LeXi — AAC Communicator
+# LeXi — Comunicador AAC
 
-![LeXi AAC Web Communicator](banner.en.svg)
+![LeXi Comunicador Web CAA](banner.es.svg)
 
-[English](README.md) | [Español](README.es.md)
+[English](README.en.md) | [Español](README.md)
 
-![Status: Under development](https://img.shields.io/badge/status-under%20development-orange)
-![License: AGPL-3.0](https://img.shields.io/badge/license-AGPL--3.0-blue)
+![Estado: en desarrollo](https://img.shields.io/badge/estado-en%20desarrollo-orange)
+![Licencia: AGPL-3.0](https://img.shields.io/badge/licencia-AGPL--3.0-blue)
 ![Astro](https://img.shields.io/badge/Astro-5.0-BC52EE?logo=astro&logoColor=white)
-![Svelte](https://img.shields.io/badge/Svelte-latest-FF3E00?logo=svelte&logoColor=white)
+![Svelte](https://img.shields.io/badge/Svelte-última-FF3E00?logo=svelte&logoColor=white)
 ![Cloudflare Pages](https://img.shields.io/badge/Cloudflare%20Pages-000000?logo=cloudflare&logoColor=white)
-![PWA](https://img.shields.io/badge/PWA-enabled-5A0FC8)
-![Spanish](https://img.shields.io/badge/language-es-009150)
+![PWA](https://img.shields.io/badge/PWA-habilitada-5A0FC8)
+![Español](https://img.shields.io/badge/idioma-es-009150)
 
-> **STATUS: UNDER DEVELOPMENT**
-> This project is under active development. Architecture, data schema, features
-> and UI may change — sometimes significantly — throughout the cycle.
-> Documentation may lag behind the current code. Use at your own risk.
+> **ESTADO: EN DESARROLLO**
+> Este proyecto se encuentra en fase activa de desarrollo. La arquitectura, el
+> esquema de datos, las funciones y la interfaz pueden cambiar —a veces de forma
+> importante— a lo largo del ciclo. La documentación puede quedar desactualizada
+> respecto al código actual. Úsalo bajo tu propia responsabilidad.
 
-LeXi is an **Augmentative and Alternative Communication (AAC) PWA**: a board of
-picture cards that play sound when tapped (synthesized speech or recorded audio).
-It is designed for people with speech difficulties and for use by therapists and
-families (children and adults).
+LeXi es una **PWA de comunicación aumentativa y alternativa (AAC)**: un tablero
+de tarjetas con imágenes que, al pulsarlas, reproducen su sonido en voz
+sintetizada o con audio grabado. Está pensado para personas con dificultades de
+habla y para el uso por parte de terapeutas y familiares (niños y adultos).
 
-- Installable, **offline-first** PWA.
-- Cards with image + sound (own recording or TTS).
-- On-screen keyboard to type sentences and have them spoken (TTS).
-- In-app card & board editor (camera/photo + microphone audio).
-- Language and TTS voice selection.
-- Each device uses an anonymous profile (UUID), no sign-up/login.
-- Data and audio sync to the cloud whenever a connection is available.
+- Web PWA instalable y usable sin conexión (**offline-first**).
+- Tarjetas con imagen + sonido (grabación propia o voz sintetizada).
+- Teclado virtual para escribir frases y reproducirlas por voz (TTS).
+- Editor de tarjetas y tableros dentro de la propia app (foto/audio del micrófono).
+- Selección de idioma y de voz TTS.
+- Cada dispositivo usa un perfil anónimo (UUID) sin registro ni login.
+- Sincronización de datos y audio entre dispositivos vía la nube cuando hay red.
 
-## Current status
+## Estado actual
 
-Under development. Spanish (`es`) is the only shipped language, but the system is
-designed from day one to support additional languages (mainly English) via data
-changes rather than architectural changes.
+En desarrollo. Español (`es`) es el único idioma implantado, pero el sistema está
+diseñado desde el día 1 para admitir más idiomas (principalmente inglés) con
+cambios de datos, no de arquitectura.
 
-## Architecture (summary)
+## Arquitectura (resumen)
 
-| Layer | Technology |
+| Capa | Tecnología |
 | --- | --- |
-| Frontend | Astro (SSG) + **Svelte** interactive islands |
+| Frontend | Astro (SSG) + islas interactivas **Svelte** |
 | PWA | Manifest + Service Worker (`@vite-pwa/astro`) |
-| Offline data | IndexedDB (day-to-day source of truth) + sync queue |
-| Cloud data | Cloudflare **D1** (serverless SQLite) |
-| Audio/images | Cloudflare **R2** (read through a same-origin proxy) |
-| Voice | Native Web Speech API (SpeechSynthesis), $0 cost |
-| Microphone | MediaRecorder + getUserMedia, 100 % client-side, upload to R2 |
-| Deploy | Cloudflare Pages (Git integration) |
+| Datos offline | IndexedDB (fuente de verdad del día a día) + cola de sincronización |
+| Datos en la nube | Cloudflare **D1** (SQLite serverless) |
+| Audio/imágenes | Cloudflare **R2** (lectura vía proxy en el mismo origen) |
+| Voz | Web Speech API nativa (SpeechSynthesis), sin coste |
+| Micro | MediaRecorder + getUserMedia, 100 % en el cliente, subida a R2 |
+| Deploy | Cloudflare Pages (Git integrado) |
 
-Core flow: the app always works against IndexedDB and syncs to D1/R2 when online
-(deferred retries; Background Sync where the browser supports it). Deletes are
-tombstones and conflicts resolve with last-writer-wins on `updated_at`.
+Flujo principal: la app trabaja siempre contra IndexedDB y sincroniza a D1/R2
+cuando hay conexión (con reintentos diferidos; Background Sync cuando el navegador
+lo permite). Los borrados se hacen con *tombstones* y los conflictos se resuelven
+con *last-writer-wins* por `updated_at`.
 
-## Getting started (local dev)
+## Cómo empezar (desarrollo local)
 
-Requirements: Node.js 22+, wrangler.
+Requisitos: Node.js 22+, wrangler.
 
 ```bash
 git clone https://github.com/LiMPbIzK/lexi.git
 cd lexi
 npm install
-npx wrangler d1 migrations apply lexidb --local   # prepare local D1
+npx wrangler d1 migrations apply lexidb --local   # prepara D1 local
 npm run dev                                        # Astro dev
-npx wrangler pages dev dist                        # emulate D1/R2/KV locally
+npx wrangler pages dev dist                        # simula D1/R2/KV en local
 ```
 
-An anonymous profile (UUID) is created per device. No registration needed.
+Se genera un perfil anónimo en cada dispositivo (UUID). No necesita registro.
 
-## Production setup (summary)
+## Puesta en producción (resumen)
 
-1. Connect the GitHub repo `LiMPbIzK/lexi` to Cloudflare Pages (build: `npm run build`, output: `dist`, Node 22).
-2. Create the D1 database and apply migrations (`wrangler d1 migrations apply --remote`).
-3. Create the R2 bucket and set secrets `R2_ACCESS_KEY_ID` / `R2_SECRET_ACCESS_KEY`.
-4. Add the `lexi.fmartinezgarcia.com` domain and verify the SSL certificate.
+1. Conectar el repo GitHub `LiMPbIzK/lexi` a Cloudflare Pages (build: `npm run build`, salida: `dist`, Node 22).
+2. Crear la base de datos D1 y aplicar las migraciones (`wrangler d1 migrations apply --remote`).
+3. Crear el bucket R2 y configurar los secrets `R2_ACCESS_KEY_ID` / `R2_SECRET_ACCESS_KEY`.
+4. Añadir el dominio `lexi.fmartinezgarcia.com` y verificar el certificado SSL.
 
-## Data model (D1)
+## Esquema de datos (D1)
 
-- `users` — anonymous per-device profile (UUID, locale, TTS voice).
-- `categories` — categories/boards (id, name, color, sort order, tombstone).
-- `cards` — cards (label, image/audio in R2, TTS text, sort order, tombstone).
-- `recordings` — audio recordings (R2 key, webm/aac mime, duration).
-- `events` — usage stats (tap, speak, create, edit).
+- `users` — perfil anónimo por dispositivo (UUID, locale, voz TTS).
+- `categories` — categorías/tableros (id, nombre, color, orden, *tombstone*).
+- `cards` — tarjetas (etiqueta, imagen/audio en R2, texto TTS, orden, *tombstone*).
+- `recordings` — grabaciones de audio (clave R2, mime webm/aac, duración).
+- `events` — estadísticas de uso (tap, hablar, crear, editar).
 
-Built for future i18n: `label` is monolingual for now, with a planned path toward
-`card_translations(card_id, locale, label)` when English lands.
+Diseñado para futuro multiidioma: `label` monolingüe de momento, con camino
+previsto hacia `card_translations(card_id, locale, label)` cuando llegue el inglés.
 
-## Roadmap
+## Hoja de ruta
 
-- [x] Architecture & data-schema definition
-- [ ] Astro + Svelte skeleton and first Cloudflare Pages deploy
-- [ ] D1 + R2 bindings (Functions/API)
-- [ ] Card grid with sound (own audio or TTS)
-- [ ] Spanish on-screen keyboard + TTS
-- [ ] Card/board editor
-- [ ] Offline-first sync and usage stats
-- [ ] Final installable PWA + domain verification
-- [ ] Initial English support
+- [x] Definición de arquitectura y esquema de datos
+- [ ] Esqueleto Astro + Svelte y primer deploy en Cloudflare Pages
+- [ ] D1 + R2 vinculados (funciones/API)
+- [ ] Grid de tarjetas con sonido (audio propio o TTS)
+- [ ] Teclado virtual en español + TTS
+- [ ] Editor de tarjetas/tableros
+- [ ] Sincronización offline-first y estadísticas
+- [ ] PWA instalable final + verificación del dominio
+- [ ] Soporte inicial para inglés
 
-## License and Attribution
+## Licencia y Atribución
 
-- **Source code:** The LeXi source code is licensed under [AGPL-3.0](LICENSE).
-- **Visual assets (Pictograms):** The pictographic symbols used are the property of the Government of Aragon and have been created by Sergio Palao for [ARASAAC](http://www.arasaac.org), distributed under a Creative Commons [BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/) license.
+- **Código fuente:** El código fuente de LeXi está bajo licencia [AGPL-3.0](LICENSE).
+- **Activos visuales (Pictogramas):** Los símbolos pictográficos utilizados son propiedad del Gobierno de Aragón y han sido creados por Sergio Palao para [ARASAAC](http://www.arasaac.org), que los distribuye bajo Licencia Creative Commons [BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/).

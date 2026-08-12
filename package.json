@@ -11,6 +11,8 @@
     "astro": "astro",
     "check": "astro check",
     "icons": "node scripts/generate-icons.mjs",
+    "db:local": "wrangler d1 migrations apply lexidb --local",
+    "db:remote": "wrangler d1 migrations apply lexidb --remote",
     "pages:dev": "astro build && wrangler pages dev dist"
   },
   "dependencies": {

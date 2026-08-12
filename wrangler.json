@@ -1,10 +1,24 @@
 {
-  "name": "lexi",
-  "pages_project": "lexi",
-  "pages_build_output_dir": "dist",
-  "compatibility_date": "2026-08-12",
-  "compatibility_flags": ["nodejs_compat"],
-  "observability": {
-    "enabled": true
-  }
+	"name": "lexi",
+	"pages_build_output_dir": "dist",
+	"compatibility_date": "2026-08-12",
+	"compatibility_flags": [
+		"nodejs_compat"
+	],
+	"observability": {
+		"enabled": true
+	},
+	"d1_databases": [
+		{
+			"binding": "DB",
+			"database_name": "lexidb",
+			"database_id": "286181dd-d951-4a71-84ea-99a96bfd1021",
+			"migrations_dir": "migrations"
+		},
+		{
+			"binding": "lexidb",
+			"database_name": "lexidb",
+			"database_id": "286181dd-d951-4a71-84ea-99a96bfd1021"
+		}
+	]
 }

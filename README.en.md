@@ -89,8 +89,9 @@ Built for future i18n: `label` is monolingual for now, with a planned path towar
 ## Roadmap
 
 - [x] Architecture & data-schema definition
-- [ ] Astro + Svelte skeleton and first Cloudflare Pages deploy
-- [ ] D1 + R2 bindings (Functions/API)
+- [x] Astro + Svelte skeleton and first Cloudflare Pages deploy
+- [x] D1 + R2 bindings (Functions/API)
+- [x] ARASAAC core seed (preloaded base catalog)
 - [ ] Card grid with sound (own audio or TTS)
 - [ ] Spanish on-screen keyboard + TTS
 - [ ] Card/board editor

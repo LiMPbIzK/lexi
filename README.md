@@ -91,8 +91,9 @@ previsto hacia `card_translations(card_id, locale, label)` cuando llegue el ingl
 ## Hoja de ruta
 
 - [x] Definición de arquitectura y esquema de datos
-- [ ] Esqueleto Astro + Svelte y primer deploy en Cloudflare Pages
-- [ ] D1 + R2 vinculados (funciones/API)
+- [x] Esqueleto Astro + Svelte y primer deploy en Cloudflare Pages
+- [x] D1 + R2 vinculados (funciones/API)
+- [x] Seed ARASAAC (catálogo base precargado)
 - [ ] Grid de tarjetas con sonido (audio propio o TTS)
 - [ ] Teclado virtual en español + TTS
 - [ ] Editor de tarjetas/tableros

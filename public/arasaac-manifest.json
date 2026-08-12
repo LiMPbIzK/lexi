@@ -1,0 +1,1787 @@
+{
+  "version": 1,
+  "updated": "2026-08-12",
+  "generated": "2026-08-12T18:57:02.649Z",
+  "categories": [
+    {
+      "slug": "animales",
+      "label": "Animales",
+      "color": "#8B5E3C",
+      "emoji": "🐶",
+      "cards": [
+        {
+          "label": "perro",
+          "id": 7202,
+          "image": "arasaac/7202.png",
+          "keyword": "perro"
+        },
+        {
+          "label": "gato",
+          "id": 7114,
+          "image": "arasaac/7114.png",
+          "keyword": "gato"
+        },
+        {
+          "label": "pájaro",
+          "id": 2490,
+          "image": "arasaac/2490.png",
+          "keyword": "pájaro"
+        },
+        {
+          "label": "pez",
+          "id": 2520,
+          "image": "arasaac/2520.png",
+          "keyword": "pez"
+        },
+        {
+          "label": "caballo",
+          "id": 2294,
+          "image": "arasaac/2294.png",
+          "keyword": "caballo"
+        },
+        {
+          "label": "vaca",
+          "id": 2609,
+          "image": "arasaac/2609.png",
+          "keyword": "vaca"
+        },
+        {
+          "label": "cerdo",
+          "id": 24972,
+          "image": "arasaac/24972.png",
+          "keyword": "cerdo"
+        },
+        {
+          "label": "oveja",
+          "id": 2489,
+          "image": "arasaac/2489.png",
+          "keyword": "oveja"
+        },
+        {
+          "label": "gallina",
+          "id": 2403,
+          "image": "arasaac/2403.png",
+          "keyword": "gallina"
+        },
+        {
+          "label": "conejo",
+          "id": 2351,
+          "image": "arasaac/2351.png",
+          "keyword": "conejo"
+        },
+        {
+          "label": "ratón",
+          "id": 2820,
+          "image": "arasaac/2820.png",
+          "keyword": "ratón"
+        },
+        {
+          "label": "elefante",
+          "id": 2372,
+          "image": "arasaac/2372.png",
+          "keyword": "elefante"
+        },
+        {
+          "label": "león",
+          "id": 25187,
+          "image": "arasaac/25187.png",
+          "keyword": "león"
+        },
+        {
+          "label": "jirafa",
+          "id": 2437,
+          "image": "arasaac/2437.png",
+          "keyword": "jirafa"
+        },
+        {
+          "label": "mono",
+          "id": 2477,
+          "image": "arasaac/2477.png",
+          "keyword": "mono"
+        },
+        {
+          "label": "tigre",
+          "id": 2590,
+          "image": "arasaac/2590.png",
+          "keyword": "tigre"
+        },
+        {
+          "label": "oso",
+          "id": 2488,
+          "image": "arasaac/2488.png",
+          "keyword": "oso"
+        },
+        {
+          "label": "rana",
+          "id": 28473,
+          "image": "arasaac/28473.png",
+          "keyword": "rana"
+        },
+        {
+          "label": "tortuga",
+          "id": 26503,
+          "image": "arasaac/26503.png",
+          "keyword": "tortuga"
+        },
+        {
+          "label": "serpiente",
+          "id": 2568,
+          "image": "arasaac/2568.png",
+          "keyword": "serpiente"
+        },
+        {
+          "label": "mariposa",
+          "id": 26200,
+          "image": "arasaac/26200.png",
+          "keyword": "mariposa"
+        },
+        {
+          "label": "abeja",
+          "id": 24823,
+          "image": "arasaac/24823.png",
+          "keyword": "abeja"
+        },
+        {
+          "label": "araña",
+          "id": 2254,
+          "image": "arasaac/2254.png",
+          "keyword": "araña"
+        },
+        {
+          "label": "hormiga",
+          "id": 2425,
+          "image": "arasaac/2425.png",
+          "keyword": "hormiga"
+        }
+      ]
+    },
+    {
+      "slug": "comida",
+      "label": "Comida y bebida",
+      "color": "#E67E22",
+      "emoji": "🍎",
+      "cards": [
+        {
+          "label": "manzana",
+          "id": 2462,
+          "image": "arasaac/2462.png",
+          "keyword": "manzana"
+        },
+        {
+          "label": "pan",
+          "id": 2494,
+          "image": "arasaac/2494.png",
+          "keyword": "pan"
+        },
+        {
+          "label": "leche",
+          "id": 2445,
+          "image": "arasaac/2445.png",
+          "keyword": "leche"
+        },
+        {
+          "label": "agua",
+          "id": 32464,
+          "image": "arasaac/32464.png",
+          "keyword": "agua"
+        },
+        {
+          "label": "queso",
+          "id": 2541,
+          "image": "arasaac/2541.png",
+          "keyword": "queso"
+        },
+        {
+          "label": "huevo",
+          "id": 2427,
+          "image": "arasaac/2427.png",
+          "keyword": "huevo"
+        },
+        {
+          "label": "carne",
+          "id": 2316,
+          "image": "arasaac/2316.png",
+          "keyword": "carne"
+        },
+        {
+          "label": "pescado",
+          "id": 6502,
+          "image": "arasaac/6502.png",
+          "keyword": "pescado"
+        },
+        {
+          "label": "arroz",
+          "id": 6911,
+          "image": "arasaac/6911.png",
+          "keyword": "arroz"
+        },
+        {
+          "label": "pasta",
+          "id": 8652,
+          "image": "arasaac/8652.png",
+          "keyword": "pasta"
+        },
+        {
+          "label": "sopa",
+          "id": 2573,
+          "image": "arasaac/2573.png",
+          "keyword": "sopa"
+        },
+        {
+          "label": "zanahoria",
+          "id": 2619,
+          "image": "arasaac/2619.png",
+          "keyword": "zanahoria"
+        },
+        {
+          "label": "plátano",
+          "id": 2530,
+          "image": "arasaac/2530.png",
+          "keyword": "plátano"
+        },
+        {
+          "label": "naranja",
+          "id": 2483,
+          "image": "arasaac/2483.png",
+          "keyword": "naranja"
+        },
+        {
+          "label": "uva",
+          "id": 3247,
+          "image": "arasaac/3247.png",
+          "keyword": "uvas"
+        },
+        {
+          "label": "pera",
+          "id": 2561,
+          "image": "arasaac/2561.png",
+          "keyword": "pera"
+        },
+        {
+          "label": "fresa",
+          "id": 2400,
+          "image": "arasaac/2400.png",
+          "keyword": "fresa"
+        },
+        {
+          "label": "tomate",
+          "id": 2594,
+          "image": "arasaac/2594.png",
+          "keyword": "tomate"
+        },
+        {
+          "label": "patata",
+          "id": 2503,
+          "image": "arasaac/2503.png",
+          "keyword": "patata"
+        },
+        {
+          "label": "cebolla",
+          "id": 2323,
+          "image": "arasaac/2323.png",
+          "keyword": "cebolla"
+        },
+        {
+          "label": "aceite",
+          "id": 2246,
+          "image": "arasaac/2246.png",
+          "keyword": "aceite"
+        },
+        {
+          "label": "sal",
+          "id": 25576,
+          "image": "arasaac/25576.png",
+          "keyword": "sal"
+        },
+        {
+          "label": "azúcar",
+          "id": 25560,
+          "image": "arasaac/25560.png",
+          "keyword": "azúcar"
+        },
+        {
+          "label": "miel",
+          "id": 2911,
+          "image": "arasaac/2911.png",
+          "keyword": "miel"
+        },
+        {
+          "label": "chocolate",
+          "id": 25940,
+          "image": "arasaac/25940.png",
+          "keyword": "chocolate"
+        },
+        {
+          "label": "galleta",
+          "id": 8312,
+          "image": "arasaac/8312.png",
+          "keyword": "galleta"
+        },
+        {
+          "label": "helado",
+          "id": 35209,
+          "image": "arasaac/35209.png",
+          "keyword": "helado"
+        },
+        {
+          "label": "yogur",
+          "id": 2618,
+          "image": "arasaac/2618.png",
+          "keyword": "yogur"
+        },
+        {
+          "label": "zumo",
+          "id": 11461,
+          "image": "arasaac/11461.png",
+          "keyword": "zumo"
+        },
+        {
+          "label": "café",
+          "id": 24479,
+          "image": "arasaac/24479.png",
+          "keyword": "café"
+        },
+        {
+          "label": "té",
+          "id": 7284,
+          "image": "arasaac/7284.png",
+          "keyword": "tres en raya"
+        },
+        {
+          "label": "tarta",
+          "id": 8706,
+          "image": "arasaac/8706.png",
+          "keyword": "tarta"
+        }
+      ]
+    },
+    {
+      "slug": "acciones",
+      "label": "Acciones",
+      "color": "#27AE60",
+      "emoji": "🏃",
+      "cards": [
+        {
+          "label": "comer",
+          "id": 6456,
+          "image": "arasaac/6456.png",
+          "keyword": "comer"
+        },
+        {
+          "label": "beber",
+          "id": 6061,
+          "image": "arasaac/6061.png",
+          "keyword": "beber"
+        },
+        {
+          "label": "dormir",
+          "id": 6479,
+          "image": "arasaac/6479.png",
+          "keyword": "dormir"
+        },
+        {
+          "label": "jugar",
+          "id": 6537,
+          "image": "arasaac/6537.png",
+          "keyword": "jugar"
+        },
+        {
+          "label": "leer",
+          "id": 7141,
+          "image": "arasaac/7141.png",
+          "keyword": "leer"
+        },
+        {
+          "label": "escribir",
+          "id": 2380,
+          "image": "arasaac/2380.png",
+          "keyword": "escribir"
+        },
+        {
+          "label": "cantar",
+          "id": 6960,
+          "image": "arasaac/6960.png",
+          "keyword": "cantar"
+        },
+        {
+          "label": "bailar",
+          "id": 6052,
+          "image": "arasaac/6052.png",
+          "keyword": "bailar"
+        },
+        {
+          "label": "correr",
+          "id": 6465,
+          "image": "arasaac/6465.png",
+          "keyword": "correr"
+        },
+        {
+          "label": "saltar",
+          "id": 6607,
+          "image": "arasaac/6607.png",
+          "keyword": "saltar"
+        },
+        {
+          "label": "nadar",
+          "id": 6568,
+          "image": "arasaac/6568.png",
+          "keyword": "nadar"
+        },
+        {
+          "label": "caminar",
+          "id": 6044,
+          "image": "arasaac/6044.png",
+          "keyword": "caminar"
+        },
+        {
+          "label": "sentarse",
+          "id": 6611,
+          "image": "arasaac/6611.png",
+          "keyword": "sentar"
+        },
+        {
+          "label": "levantarse",
+          "id": 6548,
+          "image": "arasaac/6548.png",
+          "keyword": "levantarse"
+        },
+        {
+          "label": "abrir",
+          "id": 24825,
+          "image": "arasaac/24825.png",
+          "keyword": "abrir"
+        },
+        {
+          "label": "cerrar",
+          "id": 24976,
+          "image": "arasaac/24976.png",
+          "keyword": "cerrar"
+        },
+        {
+          "label": "dar",
+          "id": 28431,
+          "image": "arasaac/28431.png",
+          "keyword": "dar"
+        },
+        {
+          "label": "tomar",
+          "id": 10148,
+          "image": "arasaac/10148.png",
+          "keyword": "coger"
+        },
+        {
+          "label": "poner",
+          "id": 6989,
+          "image": "arasaac/6989.png",
+          "keyword": "poner"
+        },
+        {
+          "label": "quitar",
+          "id": 11751,
+          "image": "arasaac/11751.png",
+          "keyword": "quitar"
+        },
+        {
+          "label": "lavar",
+          "id": 8977,
+          "image": "arasaac/8977.png",
+          "keyword": "lavar"
+        },
+        {
+          "label": "lavarse",
+          "id": 8977,
+          "image": "arasaac/8977.png",
+          "keyword": "lavarse"
+        },
+        {
+          "label": "vestirse",
+          "id": 6627,
+          "image": "arasaac/6627.png",
+          "keyword": "vestirse"
+        },
+        {
+          "label": "bañarse",
+          "id": 6058,
+          "image": "arasaac/6058.png",
+          "keyword": "bañarse"
+        },
+        {
+          "label": "cepillarse",
+          "id": 5425,
+          "image": "arasaac/5425.png",
+          "keyword": "cepillarse"
+        },
+        {
+          "label": "peinarse",
+          "id": 26947,
+          "image": "arasaac/26947.png",
+          "keyword": "peinarse"
+        },
+        {
+          "label": "mirar",
+          "id": 6564,
+          "image": "arasaac/6564.png",
+          "keyword": "ver"
+        },
+        {
+          "label": "escuchar",
+          "id": 6572,
+          "image": "arasaac/6572.png",
+          "keyword": "oir"
+        },
+        {
+          "label": "hablar",
+          "id": 6517,
+          "image": "arasaac/6517.png",
+          "keyword": "hablar"
+        },
+        {
+          "label": "esperar",
+          "id": 16697,
+          "image": "arasaac/16697.png",
+          "keyword": "esperar"
+        },
+        {
+          "label": "ayudar",
+          "id": 32648,
+          "image": "arasaac/32648.png",
+          "keyword": "ayudar"
+        },
+        {
+          "label": "querer",
+          "id": 5441,
+          "image": "arasaac/5441.png",
+          "keyword": "querer"
+        },
+        {
+          "label": "poder",
+          "id": 35949,
+          "image": "arasaac/35949.png",
+          "keyword": "poder"
+        },
+        {
+          "label": "tener",
+          "id": 7271,
+          "image": "arasaac/7271.png",
+          "keyword": "tener"
+        },
+        {
+          "label": "hacer",
+          "id": 11749,
+          "image": "arasaac/11749.png",
+          "keyword": "hacer"
+        },
+        {
+          "label": "ir",
+          "id": 8142,
+          "image": "arasaac/8142.png",
+          "keyword": "ir"
+        },
+        {
+          "label": "venir",
+          "id": 32669,
+          "image": "arasaac/32669.png",
+          "keyword": "venir"
+        },
+        {
+          "label": "ver",
+          "id": 6564,
+          "image": "arasaac/6564.png",
+          "keyword": "ver"
+        },
+        {
+          "label": "oír",
+          "id": 6572,
+          "image": "arasaac/6572.png",
+          "keyword": "oir"
+        },
+        {
+          "label": "llorar",
+          "id": 7147,
+          "image": "arasaac/7147.png",
+          "keyword": "llorar"
+        },
+        {
+          "label": "reír",
+          "id": 13354,
+          "image": "arasaac/13354.png",
+          "keyword": "reír"
+        }
+      ]
+    },
+    {
+      "slug": "personas",
+      "label": "Personas",
+      "color": "#8E44AD",
+      "emoji": "👪",
+      "cards": [
+        {
+          "label": "mamá",
+          "id": 2458,
+          "image": "arasaac/2458.png",
+          "keyword": "mamá"
+        },
+        {
+          "label": "papá",
+          "id": 31146,
+          "image": "arasaac/31146.png",
+          "keyword": "papá"
+        },
+        {
+          "label": "hermano",
+          "id": 2423,
+          "image": "arasaac/2423.png",
+          "keyword": "hermano"
+        },
+        {
+          "label": "hermana",
+          "id": 2422,
+          "image": "arasaac/2422.png",
+          "keyword": "hermana"
+        },
+        {
+          "label": "abuelo",
+          "id": 23718,
+          "image": "arasaac/23718.png",
+          "keyword": "abuelo"
+        },
+        {
+          "label": "abuela",
+          "id": 23710,
+          "image": "arasaac/23710.png",
+          "keyword": "abuela"
+        },
+        {
+          "label": "tío",
+          "id": 30255,
+          "image": "arasaac/30255.png",
+          "keyword": "tío"
+        },
+        {
+          "label": "tía",
+          "id": 30271,
+          "image": "arasaac/30271.png",
+          "keyword": "tía"
+        },
+        {
+          "label": "primo",
+          "id": 30340,
+          "image": "arasaac/30340.png",
+          "keyword": "primo"
+        },
+        {
+          "label": "bebé",
+          "id": 6060,
+          "image": "arasaac/6060.png",
+          "keyword": "bebé"
+        },
+        {
+          "label": "niño",
+          "id": 7176,
+          "image": "arasaac/7176.png",
+          "keyword": "niño"
+        },
+        {
+          "label": "niña",
+          "id": 27509,
+          "image": "arasaac/27509.png",
+          "keyword": "niña"
+        },
+        {
+          "label": "hombre",
+          "id": 4665,
+          "image": "arasaac/4665.png",
+          "keyword": "hombre"
+        },
+        {
+          "label": "mujer",
+          "id": 24621,
+          "image": "arasaac/24621.png",
+          "keyword": "mujer"
+        },
+        {
+          "label": "amigo",
+          "id": 25790,
+          "image": "arasaac/25790.png",
+          "keyword": "amigo"
+        },
+        {
+          "label": "amiga",
+          "id": 8486,
+          "image": "arasaac/8486.png",
+          "keyword": "amiga"
+        },
+        {
+          "label": "profesor",
+          "id": 7796,
+          "image": "arasaac/7796.png",
+          "keyword": "profesor"
+        },
+        {
+          "label": "médico",
+          "id": 6561,
+          "image": "arasaac/6561.png",
+          "keyword": "médico"
+        },
+        {
+          "label": "enfermera",
+          "id": 2375,
+          "image": "arasaac/2375.png",
+          "keyword": "enfermera"
+        },
+        {
+          "label": "policía",
+          "id": 37367,
+          "image": "arasaac/37367.png",
+          "keyword": "policía"
+        },
+        {
+          "label": "bombero",
+          "id": 6066,
+          "image": "arasaac/6066.png",
+          "keyword": "bombero"
+        }
+      ]
+    },
+    {
+      "slug": "objetos",
+      "label": "Objetos cotidianos",
+      "color": "#2980B9",
+      "emoji": "🪑",
+      "cards": [
+        {
+          "label": "cama",
+          "id": 25900,
+          "image": "arasaac/25900.png",
+          "keyword": "cama"
+        },
+        {
+          "label": "silla",
+          "id": 3155,
+          "image": "arasaac/3155.png",
+          "keyword": "silla"
+        },
+        {
+          "label": "mesa",
+          "id": 3129,
+          "image": "arasaac/3129.png",
+          "keyword": "mesa"
+        },
+        {
+          "label": "puerta",
+          "id": 3244,
+          "image": "arasaac/3244.png",
+          "keyword": "puerta"
+        },
+        {
+          "label": "ventana",
+          "id": 2611,
+          "image": "arasaac/2611.png",
+          "keyword": "ventana"
+        },
+        {
+          "label": "casa",
+          "id": 6964,
+          "image": "arasaac/6964.png",
+          "keyword": "casa"
+        },
+        {
+          "label": "escuela",
+          "id": 32446,
+          "image": "arasaac/32446.png",
+          "keyword": "colegio"
+        },
+        {
+          "label": "coche",
+          "id": 2339,
+          "image": "arasaac/2339.png",
+          "keyword": "coche"
+        },
+        {
+          "label": "autobús",
+          "id": 2262,
+          "image": "arasaac/2262.png",
+          "keyword": "autobús"
+        },
+        {
+          "label": "tren",
+          "id": 2603,
+          "image": "arasaac/2603.png",
+          "keyword": "tren"
+        },
+        {
+          "label": "avión",
+          "id": 2264,
+          "image": "arasaac/2264.png",
+          "keyword": "avión"
+        },
+        {
+          "label": "barco",
+          "id": 6932,
+          "image": "arasaac/6932.png",
+          "keyword": "barco"
+        },
+        {
+          "label": "bicicleta",
+          "id": 6935,
+          "image": "arasaac/6935.png",
+          "keyword": "bicicleta"
+        },
+        {
+          "label": "pelota",
+          "id": 3241,
+          "image": "arasaac/3241.png",
+          "keyword": "pelota"
+        },
+        {
+          "label": "libro",
+          "id": 25191,
+          "image": "arasaac/25191.png",
+          "keyword": "libro"
+        },
+        {
+          "label": "lápiz",
+          "id": 2440,
+          "image": "arasaac/2440.png",
+          "keyword": "lápiz"
+        },
+        {
+          "label": "bolígrafo",
+          "id": 2282,
+          "image": "arasaac/2282.png",
+          "keyword": "bolígrafo"
+        },
+        {
+          "label": "papel",
+          "id": 8349,
+          "image": "arasaac/8349.png",
+          "keyword": "papel"
+        },
+        {
+          "label": "tijeras",
+          "id": 2591,
+          "image": "arasaac/2591.png",
+          "keyword": "tijeras"
+        },
+        {
+          "label": "mochila",
+          "id": 2475,
+          "image": "arasaac/2475.png",
+          "keyword": "mochila"
+        },
+        {
+          "label": "zapatos",
+          "id": 2622,
+          "image": "arasaac/2622.png",
+          "keyword": "zapatos"
+        },
+        {
+          "label": "calcetines",
+          "id": 2298,
+          "image": "arasaac/2298.png",
+          "keyword": "calcetines"
+        },
+        {
+          "label": "camiseta",
+          "id": 2309,
+          "image": "arasaac/2309.png",
+          "keyword": "camiseta"
+        },
+        {
+          "label": "pantalón",
+          "id": 2565,
+          "image": "arasaac/2565.png",
+          "keyword": "pantalón"
+        },
+        {
+          "label": "abrigo",
+          "id": 2242,
+          "image": "arasaac/2242.png",
+          "keyword": "abrigo"
+        },
+        {
+          "label": "gorro",
+          "id": 2412,
+          "image": "arasaac/2412.png",
+          "keyword": "gorro"
+        },
+        {
+          "label": "gafas",
+          "id": 3329,
+          "image": "arasaac/3329.png",
+          "keyword": "gafas"
+        },
+        {
+          "label": "reloj",
+          "id": 2549,
+          "image": "arasaac/2549.png",
+          "keyword": "reloj"
+        },
+        {
+          "label": "teléfono",
+          "id": 26479,
+          "image": "arasaac/26479.png",
+          "keyword": "teléfono"
+        },
+        {
+          "label": "ordenador",
+          "id": 7190,
+          "image": "arasaac/7190.png",
+          "keyword": "ordenador"
+        },
+        {
+          "label": "televisión",
+          "id": 25498,
+          "image": "arasaac/25498.png",
+          "keyword": "tele"
+        },
+        {
+          "label": "lámpara",
+          "id": 4936,
+          "image": "arasaac/4936.png",
+          "keyword": "lámpara"
+        },
+        {
+          "label": "cepillo",
+          "id": 2694,
+          "image": "arasaac/2694.png",
+          "keyword": "cepillo"
+        },
+        {
+          "label": "peine",
+          "id": 2852,
+          "image": "arasaac/2852.png",
+          "keyword": "peine"
+        },
+        {
+          "label": "jabón",
+          "id": 8094,
+          "image": "arasaac/8094.png",
+          "keyword": "jabón"
+        },
+        {
+          "label": "toalla",
+          "id": 2593,
+          "image": "arasaac/2593.png",
+          "keyword": "toalla"
+        },
+        {
+          "label": "pañal",
+          "id": 22017,
+          "image": "arasaac/22017.png",
+          "keyword": "pañal"
+        },
+        {
+          "label": "biberón",
+          "id": 4577,
+          "image": "arasaac/4577.png",
+          "keyword": "biberón"
+        },
+        {
+          "label": "cuchara",
+          "id": 2362,
+          "image": "arasaac/2362.png",
+          "keyword": "cuchara"
+        },
+        {
+          "label": "tenedor",
+          "id": 2588,
+          "image": "arasaac/2588.png",
+          "keyword": "tenedor"
+        },
+        {
+          "label": "plato",
+          "id": 16857,
+          "image": "arasaac/16857.png",
+          "keyword": "plato"
+        },
+        {
+          "label": "vaso",
+          "id": 2610,
+          "image": "arasaac/2610.png",
+          "keyword": "vaso"
+        },
+        {
+          "label": "taza",
+          "id": 2582,
+          "image": "arasaac/2582.png",
+          "keyword": "taza"
+        }
+      ]
+    },
+    {
+      "slug": "lugares",
+      "label": "Lugares",
+      "color": "#16A085",
+      "emoji": "🏠",
+      "cards": [
+        {
+          "label": "casa",
+          "id": 6964,
+          "image": "arasaac/6964.png",
+          "keyword": "casa"
+        },
+        {
+          "label": "colegio",
+          "id": 32446,
+          "image": "arasaac/32446.png",
+          "keyword": "colegio"
+        },
+        {
+          "label": "parque",
+          "id": 2859,
+          "image": "arasaac/2859.png",
+          "keyword": "parque"
+        },
+        {
+          "label": "hospital",
+          "id": 3116,
+          "image": "arasaac/3116.png",
+          "keyword": "hospital"
+        },
+        {
+          "label": "farmacia",
+          "id": 6497,
+          "image": "arasaac/6497.png",
+          "keyword": "farmacia"
+        },
+        {
+          "label": "tienda",
+          "id": 35695,
+          "image": "arasaac/35695.png",
+          "keyword": "tienda"
+        },
+        {
+          "label": "supermercado",
+          "id": 3389,
+          "image": "arasaac/3389.png",
+          "keyword": "supermercado"
+        },
+        {
+          "label": "biblioteca",
+          "id": 6063,
+          "image": "arasaac/6063.png",
+          "keyword": "biblioteca"
+        },
+        {
+          "label": "cine",
+          "id": 30387,
+          "image": "arasaac/30387.png",
+          "keyword": "cine"
+        },
+        {
+          "label": "piscina",
+          "id": 30516,
+          "image": "arasaac/30516.png",
+          "keyword": "piscina"
+        },
+        {
+          "label": "playa",
+          "id": 30518,
+          "image": "arasaac/30518.png",
+          "keyword": "playa"
+        },
+        {
+          "label": "montaña",
+          "id": 2909,
+          "image": "arasaac/2909.png",
+          "keyword": "montaña"
+        },
+        {
+          "label": "campo",
+          "id": 2683,
+          "image": "arasaac/2683.png",
+          "keyword": "campo"
+        },
+        {
+          "label": "ciudad",
+          "id": 2704,
+          "image": "arasaac/2704.png",
+          "keyword": "ciudad"
+        },
+        {
+          "label": "pueblo",
+          "id": 2823,
+          "image": "arasaac/2823.png",
+          "keyword": "pueblo"
+        },
+        {
+          "label": "calle",
+          "id": 2299,
+          "image": "arasaac/2299.png",
+          "keyword": "calle"
+        },
+        {
+          "label": "jardín",
+          "id": 2434,
+          "image": "arasaac/2434.png",
+          "keyword": "jardín"
+        },
+        {
+          "label": "bosque",
+          "id": 2666,
+          "image": "arasaac/2666.png",
+          "keyword": "bosque"
+        },
+        {
+          "label": "río",
+          "id": 2811,
+          "image": "arasaac/2811.png",
+          "keyword": "río"
+        },
+        {
+          "label": "mar",
+          "id": 2925,
+          "image": "arasaac/2925.png",
+          "keyword": "mar"
+        },
+        {
+          "label": "restaurante",
+          "id": 32408,
+          "image": "arasaac/32408.png",
+          "keyword": "restaurante"
+        },
+        {
+          "label": "panadería",
+          "id": 6576,
+          "image": "arasaac/6576.png",
+          "keyword": "panadería"
+        }
+      ]
+    },
+    {
+      "slug": "descriptores",
+      "label": "Descriptores",
+      "color": "#F39C12",
+      "emoji": "🎨",
+      "cards": [
+        {
+          "label": "grande",
+          "id": 4658,
+          "image": "arasaac/4658.png",
+          "keyword": "grande"
+        },
+        {
+          "label": "pequeño",
+          "id": 4716,
+          "image": "arasaac/4716.png",
+          "keyword": "pequeño"
+        },
+        {
+          "label": "largo",
+          "id": 26162,
+          "image": "arasaac/26162.png",
+          "keyword": "largo"
+        },
+        {
+          "label": "corto",
+          "id": 26002,
+          "image": "arasaac/26002.png",
+          "keyword": "corto"
+        },
+        {
+          "label": "alto",
+          "id": 25782,
+          "image": "arasaac/25782.png",
+          "keyword": "alto"
+        },
+        {
+          "label": "bajo",
+          "id": 7047,
+          "image": "arasaac/7047.png",
+          "keyword": "bajo"
+        },
+        {
+          "label": "gordo",
+          "id": 25133,
+          "image": "arasaac/25133.png",
+          "keyword": "gordo"
+        },
+        {
+          "label": "delgado",
+          "id": 25048,
+          "image": "arasaac/25048.png",
+          "keyword": "delgado"
+        },
+        {
+          "label": "pesado",
+          "id": 27025,
+          "image": "arasaac/27025.png",
+          "keyword": "pesado"
+        },
+        {
+          "label": "ligero",
+          "id": 4679,
+          "image": "arasaac/4679.png",
+          "keyword": "ligero"
+        },
+        {
+          "label": "caliente",
+          "id": 4583,
+          "image": "arasaac/4583.png",
+          "keyword": "caliente"
+        },
+        {
+          "label": "frío",
+          "id": 4652,
+          "image": "arasaac/4652.png",
+          "keyword": "frío"
+        },
+        {
+          "label": "limpio",
+          "id": 26172,
+          "image": "arasaac/26172.png",
+          "keyword": "limpio"
+        },
+        {
+          "label": "sucio",
+          "id": 4750,
+          "image": "arasaac/4750.png",
+          "keyword": "sucio"
+        },
+        {
+          "label": "nuevo",
+          "id": 11316,
+          "image": "arasaac/11316.png",
+          "keyword": "nuevo"
+        },
+        {
+          "label": "viejo",
+          "id": 11394,
+          "image": "arasaac/11394.png",
+          "keyword": "viejo"
+        },
+        {
+          "label": "joven",
+          "id": 4673,
+          "image": "arasaac/4673.png",
+          "keyword": "joven"
+        },
+        {
+          "label": "bonito",
+          "id": 11194,
+          "image": "arasaac/11194.png",
+          "keyword": "bonito"
+        },
+        {
+          "label": "feo",
+          "id": 26090,
+          "image": "arasaac/26090.png",
+          "keyword": "feo"
+        },
+        {
+          "label": "bueno",
+          "id": 4581,
+          "image": "arasaac/4581.png",
+          "keyword": "bueno"
+        },
+        {
+          "label": "malo",
+          "id": 4690,
+          "image": "arasaac/4690.png",
+          "keyword": "malo"
+        },
+        {
+          "label": "fácil",
+          "id": 4645,
+          "image": "arasaac/4645.png",
+          "keyword": "sencillo"
+        },
+        {
+          "label": "difícil",
+          "id": 4629,
+          "image": "arasaac/4629.png",
+          "keyword": "difícil"
+        },
+        {
+          "label": "rápido",
+          "id": 5306,
+          "image": "arasaac/5306.png",
+          "keyword": "rápido"
+        },
+        {
+          "label": "lento",
+          "id": 4676,
+          "image": "arasaac/4676.png",
+          "keyword": "lento"
+        },
+        {
+          "label": "fuerte",
+          "id": 25121,
+          "image": "arasaac/25121.png",
+          "keyword": "fuerte"
+        },
+        {
+          "label": "débil",
+          "id": 25044,
+          "image": "arasaac/25044.png",
+          "keyword": "débil"
+        },
+        {
+          "label": "lleno",
+          "id": 26176,
+          "image": "arasaac/26176.png",
+          "keyword": "lleno"
+        },
+        {
+          "label": "vacío",
+          "id": 26527,
+          "image": "arasaac/26527.png",
+          "keyword": "vacío"
+        },
+        {
+          "label": "abierto",
+          "id": 36309,
+          "image": "arasaac/36309.png",
+          "keyword": "abierto"
+        },
+        {
+          "label": "cerrado",
+          "id": 4596,
+          "image": "arasaac/4596.png",
+          "keyword": "cerrado"
+        },
+        {
+          "label": "duro",
+          "id": 4637,
+          "image": "arasaac/4637.png",
+          "keyword": "duro"
+        },
+        {
+          "label": "blando",
+          "id": 4578,
+          "image": "arasaac/4578.png",
+          "keyword": "blando"
+        },
+        {
+          "label": "rojo",
+          "id": 2808,
+          "image": "arasaac/2808.png",
+          "keyword": "rojo"
+        },
+        {
+          "label": "azul",
+          "id": 4869,
+          "image": "arasaac/4869.png",
+          "keyword": "azul"
+        },
+        {
+          "label": "verde",
+          "id": 4887,
+          "image": "arasaac/4887.png",
+          "keyword": "verde"
+        },
+        {
+          "label": "amarillo",
+          "id": 2648,
+          "image": "arasaac/2648.png",
+          "keyword": "amarillo"
+        },
+        {
+          "label": "naranja",
+          "id": 2483,
+          "image": "arasaac/2483.png",
+          "keyword": "naranja"
+        },
+        {
+          "label": "rosa",
+          "id": 3151,
+          "image": "arasaac/3151.png",
+          "keyword": "rosa"
+        },
+        {
+          "label": "morado",
+          "id": 2907,
+          "image": "arasaac/2907.png",
+          "keyword": "morado"
+        },
+        {
+          "label": "marrón",
+          "id": 2923,
+          "image": "arasaac/2923.png",
+          "keyword": "marrón"
+        },
+        {
+          "label": "negro",
+          "id": 2886,
+          "image": "arasaac/2886.png",
+          "keyword": "negro"
+        },
+        {
+          "label": "blanco",
+          "id": 8043,
+          "image": "arasaac/8043.png",
+          "keyword": "blanco"
+        },
+        {
+          "label": "gris",
+          "id": 3340,
+          "image": "arasaac/3340.png",
+          "keyword": "gris"
+        }
+      ]
+    },
+    {
+      "slug": "funcionales",
+      "label": "Palabras funcionales",
+      "color": "#7F8C8D",
+      "emoji": "💬",
+      "cards": [
+        {
+          "label": "sí",
+          "id": 5584,
+          "image": "arasaac/5584.png",
+          "keyword": "sí"
+        },
+        {
+          "label": "no",
+          "id": 5526,
+          "image": "arasaac/5526.png",
+          "keyword": "no"
+        },
+        {
+          "label": "más",
+          "id": 3220,
+          "image": "arasaac/3220.png",
+          "keyword": "más"
+        },
+        {
+          "label": "otra vez",
+          "id": 37162,
+          "image": "arasaac/37162.png",
+          "keyword": "otra vez"
+        },
+        {
+          "label": "ayuda",
+          "id": 19524,
+          "image": "arasaac/19524.png",
+          "keyword": "ayuda"
+        },
+        {
+          "label": "baño",
+          "id": 15905,
+          "image": "arasaac/15905.png",
+          "keyword": "baño"
+        },
+        {
+          "label": "hambre",
+          "id": 35559,
+          "image": "arasaac/35559.png",
+          "keyword": "hambre"
+        },
+        {
+          "label": "sed",
+          "id": 7273,
+          "image": "arasaac/7273.png",
+          "keyword": "sediento"
+        },
+        {
+          "label": "dolor",
+          "id": 2367,
+          "image": "arasaac/2367.png",
+          "keyword": "dolor"
+        },
+        {
+          "label": "cansado",
+          "id": 35537,
+          "image": "arasaac/35537.png",
+          "keyword": "cansado"
+        },
+        {
+          "label": "contento",
+          "id": 35547,
+          "image": "arasaac/35547.png",
+          "keyword": "contento"
+        },
+        {
+          "label": "triste",
+          "id": 35545,
+          "image": "arasaac/35545.png",
+          "keyword": "triste"
+        },
+        {
+          "label": "enfadado",
+          "id": 35539,
+          "image": "arasaac/35539.png",
+          "keyword": "enfadado"
+        },
+        {
+          "label": "asustado",
+          "id": 35535,
+          "image": "arasaac/35535.png",
+          "keyword": "asustado"
+        },
+        {
+          "label": "sorprendido",
+          "id": 35529,
+          "image": "arasaac/35529.png",
+          "keyword": "sorprendido"
+        },
+        {
+          "label": "aburrido",
+          "id": 35531,
+          "image": "arasaac/35531.png",
+          "keyword": "aburrido"
+        },
+        {
+          "label": "feliz",
+          "id": 35533,
+          "image": "arasaac/35533.png",
+          "keyword": "alegre"
+        },
+        {
+          "label": "bien",
+          "id": 5397,
+          "image": "arasaac/5397.png",
+          "keyword": "bien"
+        },
+        {
+          "label": "mal",
+          "id": 5504,
+          "image": "arasaac/5504.png",
+          "keyword": "mal"
+        },
+        {
+          "label": "gracias",
+          "id": 8129,
+          "image": "arasaac/8129.png",
+          "keyword": "gracias"
+        },
+        {
+          "label": "por favor",
+          "id": 8195,
+          "image": "arasaac/8195.png",
+          "keyword": "por favor"
+        },
+        {
+          "label": "perdón",
+          "id": 11625,
+          "image": "arasaac/11625.png",
+          "keyword": "lo siento"
+        },
+        {
+          "label": "hola",
+          "id": 6522,
+          "image": "arasaac/6522.png",
+          "keyword": "hola"
+        },
+        {
+          "label": "adiós",
+          "id": 6028,
+          "image": "arasaac/6028.png",
+          "keyword": "adiós"
+        },
+        {
+          "label": "buenos días",
+          "id": 6944,
+          "image": "arasaac/6944.png",
+          "keyword": "buenos días"
+        },
+        {
+          "label": "buenas tardes",
+          "id": 6943,
+          "image": "arasaac/6943.png",
+          "keyword": "buenas tardes"
+        },
+        {
+          "label": "buenas noches",
+          "id": 6942,
+          "image": "arasaac/6942.png",
+          "keyword": "buenas noches"
+        },
+        {
+          "label": "¿qué?",
+          "id": 22620,
+          "image": "arasaac/22620.png",
+          "keyword": "qué"
+        },
+        {
+          "label": "¿quién?",
+          "id": 9853,
+          "image": "arasaac/9853.png",
+          "keyword": "quién"
+        },
+        {
+          "label": "¿dónde?",
+          "id": 7764,
+          "image": "arasaac/7764.png",
+          "keyword": "dónde"
+        },
+        {
+          "label": "¿cuándo?",
+          "id": 32874,
+          "image": "arasaac/32874.png",
+          "keyword": "cuándo"
+        },
+        {
+          "label": "¿por qué?",
+          "id": 11348,
+          "image": "arasaac/11348.png",
+          "keyword": "porque"
+        },
+        {
+          "label": "¿cómo?",
+          "id": 22619,
+          "image": "arasaac/22619.png",
+          "keyword": "cómo"
+        },
+        {
+          "label": "yo",
+          "id": 6632,
+          "image": "arasaac/6632.png",
+          "keyword": "yo"
+        },
+        {
+          "label": "tú",
+          "id": 6625,
+          "image": "arasaac/6625.png",
+          "keyword": "tú"
+        },
+        {
+          "label": "él",
+          "id": 6480,
+          "image": "arasaac/6480.png",
+          "keyword": "él"
+        },
+        {
+          "label": "ella",
+          "id": 7028,
+          "image": "arasaac/7028.png",
+          "keyword": "ella"
+        },
+        {
+          "label": "nosotros",
+          "id": 7185,
+          "image": "arasaac/7185.png",
+          "keyword": "nosotros"
+        },
+        {
+          "label": "ellos",
+          "id": 7032,
+          "image": "arasaac/7032.png",
+          "keyword": "ellos"
+        },
+        {
+          "label": "mi",
+          "id": 12264,
+          "image": "arasaac/12264.png",
+          "keyword": "mío"
+        },
+        {
+          "label": "tu",
+          "id": 6625,
+          "image": "arasaac/6625.png",
+          "keyword": "tú"
+        },
+        {
+          "label": "su",
+          "id": 12272,
+          "image": "arasaac/12272.png",
+          "keyword": "su"
+        },
+        {
+          "label": "este",
+          "id": 7095,
+          "image": "arasaac/7095.png",
+          "keyword": "este"
+        },
+        {
+          "label": "ese",
+          "id": 7091,
+          "image": "arasaac/7091.png",
+          "keyword": "eso"
+        },
+        {
+          "label": "aquel",
+          "id": 6906,
+          "image": "arasaac/6906.png",
+          "keyword": "aquel"
+        },
+        {
+          "label": "aquí",
+          "id": 5382,
+          "image": "arasaac/5382.png",
+          "keyword": "aquí"
+        },
+        {
+          "label": "allí",
+          "id": 5375,
+          "image": "arasaac/5375.png",
+          "keyword": "ahí"
+        },
+        {
+          "label": "ahora",
+          "id": 32747,
+          "image": "arasaac/32747.png",
+          "keyword": "ahora"
+        },
+        {
+          "label": "después",
+          "id": 32749,
+          "image": "arasaac/32749.png",
+          "keyword": "después"
+        },
+        {
+          "label": "antes",
+          "id": 32745,
+          "image": "arasaac/32745.png",
+          "keyword": "antes"
+        },
+        {
+          "label": "hoy",
+          "id": 7131,
+          "image": "arasaac/7131.png",
+          "keyword": "hoy"
+        },
+        {
+          "label": "mañana",
+          "id": 25704,
+          "image": "arasaac/25704.png",
+          "keyword": "mañana"
+        },
+        {
+          "label": "ayer",
+          "id": 6926,
+          "image": "arasaac/6926.png",
+          "keyword": "ayer"
+        },
+        {
+          "label": "siempre",
+          "id": 17322,
+          "image": "arasaac/17322.png",
+          "keyword": "siempre"
+        },
+        {
+          "label": "nunca",
+          "id": 5527,
+          "image": "arasaac/5527.png",
+          "keyword": "nunca"
+        },
+        {
+          "label": "todo",
+          "id": 5596,
+          "image": "arasaac/5596.png",
+          "keyword": "todo"
+        },
+        {
+          "label": "nada",
+          "id": 29839,
+          "image": "arasaac/29839.png",
+          "keyword": "nada"
+        },
+        {
+          "label": "alguien",
+          "id": 37779,
+          "image": "arasaac/37779.png",
+          "keyword": "alguien"
+        },
+        {
+          "label": "nadie",
+          "id": 11314,
+          "image": "arasaac/11314.png",
+          "keyword": "ninguno"
+        }
+      ]
+    }
+  ]
+}

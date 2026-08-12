@@ -1,0 +1,131 @@
+{
+  "version": 1,
+  "updated": "2026-08-12",
+  "overrides": {
+    "té": "te",
+    "sentarse": "sentar",
+    "tomar": "coger",
+    "feliz": "alegre",
+    "mi": "mio",
+    "¿qué?": "que",
+    "¿quién?": "quien",
+    "¿cuándo?": "cuando",
+    "¿dónde?": "donde",
+    "¿cómo?": "como",
+    "¿por qué?": "porque"
+  },
+  "categories": [
+    {
+      "slug": "animales",
+      "label": "Animales",
+      "color": "#8B5E3C",
+      "emoji": "🐶",
+      "terms": [
+        "perro", "gato", "pájaro", "pez", "caballo", "vaca", "cerdo",
+        "oveja", "gallina", "conejo", "ratón", "elefante", "león",
+        "jirafa", "mono", "tigre", "oso", "rana", "tortuga", "serpiente",
+        "mariposa", "abeja", "araña", "hormiga"
+      ]
+    },
+    {
+      "slug": "comida",
+      "label": "Comida y bebida",
+      "color": "#E67E22",
+      "emoji": "🍎",
+      "terms": [
+        "manzana", "pan", "leche", "agua", "queso", "huevo", "carne",
+        "pescado", "arroz", "pasta", "sopa", "zanahoria", "plátano",
+        "naranja", "uva", "pera", "fresa", "tomate", "patata", "cebolla",
+        "aceite", "sal", "azúcar", "miel", "chocolate", "galleta",
+        "helado", "yogur", "zumo", "café", "té", "tarta"
+      ]
+    },
+    {
+      "slug": "acciones",
+      "label": "Acciones",
+      "color": "#27AE60",
+      "emoji": "🏃",
+      "terms": [
+        "comer", "beber", "dormir", "jugar", "leer", "escribir",
+        "cantar", "bailar", "correr", "saltar", "nadar", "caminar",
+        "sentarse", "levantarse", "abrir", "cerrar", "dar", "tomar",
+        "poner", "quitar", "lavar", "lavarse", "vestirse", "bañarse",
+        "cepillarse", "peinarse", "mirar", "escuchar", "hablar",
+        "esperar", "ayudar", "querer", "poder", "tener", "hacer", "ir",
+        "venir", "ver", "oír", "llorar", "reír"
+      ]
+    },
+    {
+      "slug": "personas",
+      "label": "Personas",
+      "color": "#8E44AD",
+      "emoji": "👪",
+      "terms": [
+        "mamá", "papá", "hermano", "hermana", "abuelo", "abuela",
+        "tío", "tía", "primo", "bebé", "niño", "niña", "hombre",
+        "mujer", "amigo", "amiga", "profesor", "médico", "enfermera",
+        "policía", "bombero"
+      ]
+    },
+    {
+      "slug": "objetos",
+      "label": "Objetos cotidianos",
+      "color": "#2980B9",
+      "emoji": "🪑",
+      "terms": [
+        "cama", "silla", "mesa", "puerta", "ventana", "casa", "escuela",
+        "coche", "autobús", "tren", "avión", "barco", "bicicleta",
+        "pelota", "libro", "lápiz", "bolígrafo", "papel", "tijeras",
+        "mochila", "zapatos", "calcetines", "camiseta", "pantalón",
+        "abrigo", "gorro", "gafas", "reloj", "teléfono", "ordenador",
+        "televisión", "lámpara", "cepillo", "peine", "jabón", "toalla",
+        "pañal", "biberón", "cuchara", "tenedor", "plato", "vaso", "taza"
+      ]
+    },
+    {
+      "slug": "lugares",
+      "label": "Lugares",
+      "color": "#16A085",
+      "emoji": "🏠",
+      "terms": [
+        "casa", "colegio", "parque", "hospital", "farmacia", "tienda",
+        "supermercado", "biblioteca", "cine", "piscina", "playa",
+        "montaña", "campo", "ciudad", "pueblo", "calle", "jardín",
+        "bosque", "río", "mar", "restaurante", "panadería"
+      ]
+    },
+    {
+      "slug": "descriptores",
+      "label": "Descriptores",
+      "color": "#F39C12",
+      "emoji": "🎨",
+      "terms": [
+        "grande", "pequeño", "largo", "corto", "alto", "bajo", "gordo",
+        "delgado", "pesado", "ligero", "caliente", "frío", "limpio",
+        "sucio", "nuevo", "viejo", "joven", "bonito", "feo", "bueno",
+        "malo", "fácil", "difícil", "rápido", "lento", "fuerte",
+        "débil", "lleno", "vacío", "abierto", "cerrado", "duro",
+        "blando", "rojo", "azul", "verde", "amarillo", "naranja",
+        "rosa", "morado", "marrón", "negro", "blanco", "gris"
+      ]
+    },
+    {
+      "slug": "funcionales",
+      "label": "Palabras funcionales",
+      "color": "#7F8C8D",
+      "emoji": "💬",
+      "terms": [
+        "sí", "no", "más", "otra vez", "ayuda", "baño", "hambre",
+        "sed", "dolor", "cansado", "contento", "triste", "enfadado",
+        "asustado", "sorprendido", "aburrido", "feliz", "bien", "mal",
+        "gracias", "por favor", "perdón", "hola", "adiós",
+        "buenos días", "buenas tardes", "buenas noches",
+        "¿qué?", "¿quién?", "¿dónde?", "¿cuándo?", "¿por qué?",
+        "¿cómo?", "yo", "tú", "él", "ella", "nosotros", "ellos",
+        "mi", "tu", "su", "este", "ese", "aquel", "aquí", "allí",
+        "ahora", "después", "antes", "hoy", "mañana", "ayer",
+        "siempre", "nunca", "todo", "nada", "alguien", "nadie"
+      ]
+    }
+  ]
+}

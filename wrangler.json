@@ -14,11 +14,6 @@
 			"database_name": "lexidb",
 			"database_id": "286181dd-d951-4a71-84ea-99a96bfd1021",
 			"migrations_dir": "migrations"
-		},
-		{
-			"binding": "lexidb",
-			"database_name": "lexidb",
-			"database_id": "286181dd-d951-4a71-84ea-99a96bfd1021"
 		}
 	]
 }

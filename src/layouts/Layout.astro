@@ -1,0 +1,43 @@
+---
+import ThemeSelector from '../components/ThemeSelector.svelte';
+import '../styles/global.css';
+import '../styles/themes.css';
+
+interface Props {
+  title?: string;
+}
+
+const { title = 'LeXi' } = Astro.props;
+
+const currentYear = new Date().getFullYear();
+---
+
+<!doctype html>
+<html lang="es" data-theme="neutral">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="description" content="LeXi — Comunicador AAC con tarjetas, sonido y teclado virtual." />
+    <meta name="theme-color" content="#0f172a" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <title>{title} — LeXi</title>
+  </head>
+  <body>
+    <header class="topbar">
+      <span class="logo">LeXi</span>
+      <ThemeSelector client:load />
+    </header>
+
+    <slot />
+
+    <footer class="footer">
+      <p>LeXi — Comunicador AAC · © {currentYear}</p>
+    </footer>
+
+    <script>
+      const saved = localStorage.getItem('lexi:theme');
+      if (saved) document.documentElement.dataset.theme = saved;
+    </script>
+  </body>
+</html>

@@ -1,0 +1,28 @@
+{
+  "name": "lexi",
+  "type": "module",
+  "version": "0.1.0",
+  "private": true,
+  "description": "LeXi — AAC Communicator (PWA offline-first)",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro",
+    "check": "astro check",
+    "icons": "node scripts/generate-icons.mjs",
+    "pages:dev": "astro build && wrangler pages dev dist"
+  },
+  "dependencies": {
+    "@astrojs/svelte": "^7.0.5",
+    "@vite-pwa/astro": "^1.2.0",
+    "astro": "^5.0.0",
+    "svelte": "^5.1.16"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.10",
+    "sharp": "^0.35.3",
+    "typescript": "^5.9.3",
+    "wrangler": "^4.0.0"
+  }
+}

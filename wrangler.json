@@ -1,0 +1,10 @@
+{
+  "name": "lexi",
+  "pages_project": "lexi",
+  "pages_build_output_dir": "dist",
+  "compatibility_date": "2026-08-12",
+  "compatibility_flags": ["nodejs_compat"],
+  "observability": {
+    "enabled": true
+  }
+}

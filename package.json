@@ -10,6 +10,7 @@
     "preview": "astro preview",
     "astro": "astro",
     "check": "astro check",
+    "check:functions": "tsc --noEmit --skipLibCheck --target ES2022 --module ESNext --moduleResolution bundler --strict functions/api/upload.ts \"functions/api/audio/[[key]].ts\" functions/env.d.ts",
     "icons": "node scripts/generate-icons.mjs",
     "db:local": "wrangler d1 migrations apply lexidb --local",
     "db:remote": "wrangler d1 migrations apply lexidb --remote",
@@ -23,6 +24,7 @@
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.10",
+    "@cloudflare/workers-types": "^5.20260812.1",
     "sharp": "^0.35.3",
     "typescript": "^5.9.3",
     "wrangler": "^4.0.0"

@@ -22,10 +22,14 @@ jobs:
 
       - name: Seed check
         id: seed
+        shell: bash
         run: |
+          set +e
           node scripts/seed-arasaac.mjs --check
-          exit_code=$?
-          echo "changed=$exit_code" >> "$GITHUB_OUTPUT"
+          code=$?
+          set -e
+          echo "changed=$code" >> "$GITHUB_OUTPUT"
+          echo "exit=$code"
 
       - name: Seed full (download + generate)
         if: steps.seed.outputs.changed == '1'

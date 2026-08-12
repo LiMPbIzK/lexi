@@ -15,9 +15,6 @@ build/
 .wrangler/
 .dev.vars
 
-# Seed ARASAAC (hash local de detección de cambios)
-data/.arasaac-hash
-
 # Env files (keep .dev.vars example if needed)
 .env
 .env.*

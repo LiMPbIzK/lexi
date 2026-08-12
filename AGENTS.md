@@ -42,8 +42,8 @@ Para consultar/ampliar: README.md → "Esquema de datos".
 
 ## Seed ARASAAC (Hito4)
 - Vocabulario editable en `data/core-vocab.es.json` (categorías + términos).
-- `scripts/seed-arasaac.mjs` con modo `--check` (hash-comparativo) para detectar
-  cambios y solo correr build completo en CI cuando los haya.
+- `scripts/seed-arasaac.mjs` con modo `--check` (compara contra el manifest
+  commiteado) para detectar cambios y solo regenerar en CI cuando los haya.
 - Imágenes desde `https://static.arasaac.org/pictograms/{id}/{id}_500.png`
   (CDN estático; la API `/v1/pictograms/es/search/{term}` sirve metadatos).
 - Catálogo con `user_id = NULL` (global). Licencia CC BY-NC-SA 4.0 — atribución

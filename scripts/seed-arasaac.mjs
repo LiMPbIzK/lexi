@@ -14,25 +14,46 @@
  *   node scripts/seed-arasaac.mjs --download # además descarga PNGs
  *   node scripts/seed-arasaac.mjs --check    # exit 1 si hubo cambios
  *
- * Detección de cambios: se guarda un hash del mapa término->pictograma en
- * data/.arasaac-hash. --check solo compara; no escribe nada.
+ * Detección de cambios: --check regenera el manifest en memoria (sin el campo
+ * `generated`) y lo compara con el public/arasaac-manifest.json commiteado.
+ * Si difieren -> exit 1 (hay cambios). No escribe nada.
  */
 
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'node:fs';
-import { createHash } from 'node:crypto';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { searchPictograms, downloadPng } from './lib/arasaac.mjs';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const vocabPath = join(root, 'data', 'core-vocab.es.json');
-const hashPath = join(root, 'data', '.arasaac-hash');
 const manifestPath = join(root, 'public', 'arasaac-manifest.json');
 const seedSqlPath = join(root, 'migrations', '0002_seed_arasaac.sql');
 const assetsDir = join(root, 'public', 'assets', 'arasaac');
 
 const FLAG_CHECK = process.argv.includes('--check');
 const FLAG_DOWNLOAD = process.argv.includes('--download');
+
+// Construye el objeto manifest (determinista, sin `generated`).
+function buildManifest(vocab, results) {
+  return {
+    version: vocab.version,
+    updated: vocab.updated,
+    categories: vocab.categories.map((cat) => ({
+      slug: cat.slug,
+      label: cat.label,
+      color: cat.color,
+      emoji: cat.emoji,
+      cards: cat.terms
+        .filter((t) => results[cat.slug]?.[t])
+        .map((t) => ({
+          label: t,
+          id: results[cat.slug][t].id,
+          image: results[cat.slug][t].imageKey,
+          keyword: results[cat.slug][t].keyword
+        }))
+    }))
+  };
+}
 
 async function main() {
   const vocab = JSON.parse(readFileSync(vocabPath, 'utf-8'));
@@ -62,17 +83,20 @@ async function main() {
     results[cat.slug] = catMap;
   }
 
-  // 2. Hash del resultado (para detectar cambios sin tocar nada)
-  const hash = createHash('sha256').update(JSON.stringify(results)).digest('hex');
-  const prevHash = existsSync(hashPath) ? readFileSync(hashPath, 'utf-8').trim() : '';
+  // 2. Check: comparar manifest regenerado (sin `generated`) con el commiteado
+  const currentManifest = buildManifest(vocab, results);
 
   if (FLAG_CHECK) {
-    const changed = hash !== prevHash;
-    console.log(
-      changed
-        ? `✏ Hay cambios en el vocabulario ARASAAC (hash ${prevHash.slice(0, 8)} -> ${hash.slice(0, 8)}).`
-        : `✓ Sin cambios (hash ${hash.slice(0, 8)}).`
-    );
+    let changed = true;
+    let note = 'manifest no encontrado';
+    if (existsSync(manifestPath)) {
+      const committed = JSON.parse(readFileSync(manifestPath, 'utf-8'));
+      // descarta el campo `generated` (timestamp) del commiteado
+      delete committed.generated;
+      changed = JSON.stringify(currentManifest) !== JSON.stringify(committed);
+      note = changed ? 'hay cambios respecto al commiteado' : 'sin cambios';
+    }
+    console.log(changed ? `✏ ${note}.` : `✓ ${note}.`);
     process.exit(changed ? 1 : 0);
   }
 
@@ -96,23 +120,8 @@ async function main() {
 
   // 4. Manifest para la app
   const manifest = {
-    version: vocab.version,
-    updated: vocab.updated,
-    generated: new Date().toISOString(),
-    categories: vocab.categories.map((cat) => ({
-      slug: cat.slug,
-      label: cat.label,
-      color: cat.color,
-      emoji: cat.emoji,
-      cards: cat.terms
-        .filter((t) => results[cat.slug]?.[t])
-        .map((t) => ({
-          label: t,
-          id: results[cat.slug][t].id,
-          image: results[cat.slug][t].imageKey,
-          keyword: results[cat.slug][t].keyword
-        }))
-    }))
+    ...currentManifest,
+    generated: new Date().toISOString()
   };
   writeFileSync(manifestPath, JSON.stringify(manifest, null, 2) + '\n');
 
@@ -162,10 +171,8 @@ async function main() {
   }
 
   writeFileSync(seedSqlPath, sqlLines.join('\n') + '\n');
-  writeFileSync(hashPath, hash);
   console.log(`✓ Manifest: ${manifestPath}`);
   console.log(`✓ Seed SQL: ${seedSqlPath}`);
-  console.log(`✓ Hash guardado: ${hash.slice(0, 8)}`);
 }
 
 main().catch((err) => {

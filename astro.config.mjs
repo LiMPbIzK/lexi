@@ -9,6 +9,9 @@ export default defineConfig({
     svelte(),
     AstroPWA({
       registerType: 'autoUpdate',
+      devOptions: {
+        enabled: false
+      },
       manifest: {
         name: 'LeXi — Comunicador AAC',
         short_name: 'LeXi',
@@ -27,6 +30,8 @@ export default defineConfig({
       workbox: {
         globPatterns: ['**/*.{js,css,html,svg,png,ico,woff2}'],
         navigateFallback: '/index.html',
+        navigateFallbackDenylist: [/^\/api\//],
+        skipWaiting: true,
         runtimeCaching: [
           {
             urlPattern: /^https:\/\/static\.arasaac\.org\/.*/i,

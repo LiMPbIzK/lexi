@@ -8,7 +8,8 @@
   },
   "description": "LeXi — AAC Communicator (PWA offline-first)",
   "scripts": {
-    "dev": "astro dev",
+    "dev": "astro build && wrangler pages dev dist",
+    "dev:ui": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
@@ -16,8 +17,7 @@
     "check:functions": "tsc --noEmit --skipLibCheck --target ES2022 --module ESNext --moduleResolution bundler --strict functions/api/upload.ts \"functions/api/audio/[[key]].ts\" functions/api/claim.ts functions/telegram/webhook.ts functions/env.d.ts",
     "icons": "node scripts/generate-icons.mjs",
     "db:local": "wrangler d1 migrations apply lexidb --local",
-    "db:remote": "wrangler d1 migrations apply lexidb --remote",
-    "pages:dev": "astro build && wrangler pages dev dist"
+    "db:remote": "wrangler d1 migrations apply lexidb --remote"
   },
   "dependencies": {
     "@astrojs/svelte": "^7.0.5",

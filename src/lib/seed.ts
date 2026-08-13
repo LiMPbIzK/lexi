@@ -1,7 +1,8 @@
 // Seed del catálogo ARASAAC desde el manifest estático (offline-first).
 // Se ejecuta una única vez; se marca con una clave en localStorage.
+// Solo se marca como completado si el guardado en IndexedDB tuvo éxito.
 
-import { bulkPut } from './db';
+import { bulkPut, db } from './db';
 import type { ArasaacManifest, Card, Category } from './types';
 
 const SEED_KEY = 'lexi:arasaac-seeded';
@@ -12,6 +13,16 @@ export function isSeeded(): boolean {
 
 function now(): number {
   return Date.now();
+}
+
+/** Indica si el catálogo ya está en IndexedDB (por si el flag se quedó obsoleto). */
+export async function hasCatalog(): Promise<boolean> {
+  try {
+    const cats = await db.getCategories();
+    return cats.length > 0;
+  } catch {
+    return false;
+  }
 }
 
 export async function seedArasaac(manifest: ArasaacManifest): Promise<void> {

@@ -1,5 +1,5 @@
 /*
-  Content-Security-Policy: default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://static.arasaac.org https:; media-src 'self' blob: data:; connect-src 'self' https://lexi.fmartinezgarcia.com; worker-src 'self' blob:; manifest-src 'self'; frame-ancestors 'none'
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://static.arasaac.org https:; media-src 'self' blob: data:; connect-src 'self' https://lexi.fmartinezgarcia.com; worker-src 'self' blob:; manifest-src 'self'; frame-ancestors 'none'
   Permissions-Policy: microphone=(self), camera=(self)
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin

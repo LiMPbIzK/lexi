@@ -56,12 +56,15 @@ export async function claimCode(
   if (normalized === DEMO_CODE) {
     const now = Date.now();
     try {
+      // code = NULL: la columna es UNIQUE y el demo es compartible entre muchos
+      // dispositivos, así que no podemos reutilizar 'LEXI-DEMO-CODE' como clave.
       await env.DB.prepare(
         `INSERT INTO devices (id, code, label, created_at, last_seen_at, mode)
-         VALUES (?, ?, ?, ?, ?, 'demo')
+         VALUES (?, NULL, ?, ?, ?, 'demo')
          ON CONFLICT(id) DO UPDATE SET last_seen_at = excluded.last_seen_at`
-      ).bind(deviceId, normalized, DEMO_LABEL, now, now).run();
-    } catch {
+      ).bind(deviceId, DEMO_LABEL, now, now).run();
+    } catch (e) {
+      console.error('claim demo error:', e);
       return { status: 'conflict', mode: 'demo' };
     }
     return { status: 'ok', mode: 'demo' };

@@ -2,7 +2,7 @@
   import { onMount } from 'svelte';
   import { useStore } from '@nanostores/svelte-runes';
   import { db } from '../lib/db';
-  import { seedArasaac, isSeeded } from '../lib/seed';
+  import { seedArasaac, isSeeded, hasCatalog } from '../lib/seed';
   import { activeCategoryId, categories, cards, manifest, sentence } from '../stores';
   import type { ArasaacManifest } from '../lib/types';
   import CardTile from './CardTile.svelte';
@@ -13,17 +13,21 @@
   const sentenceWords = useStore(sentence);
 
   let loading = $state(true);
+  let error = $state<string | null>(null);
 
   async function ensureSeeded() {
-    if (!isSeeded()) {
-      let m = manifest.get();
-      if (!m) {
-        const res = await fetch('/arasaac-manifest.json');
-        m = (await res.json()) as ArasaacManifest;
-        manifest.set(m);
-      }
-      await seedArasaac(m);
+    // si el flag está marcado pero IndexedDB quedó vacía (error previo),
+    // re-seedear para que las tarjetas nunca desaparezcan para siempre
+    if (isSeeded() && (await hasCatalog())) return;
+
+    let m = manifest.get();
+    if (!m) {
+      const res = await fetch('/arasaac-manifest.json');
+      if (!res.ok) throw new Error('No se pudo cargar el catálogo.');
+      m = (await res.json()) as ArasaacManifest;
+      manifest.set(m);
     }
+    await seedArasaac(m);
   }
 
   function selectCategory(id: string) {
@@ -31,15 +35,20 @@
   }
 
   onMount(async () => {
-    await ensureSeeded();
-    const cats = await db.getCategories();
-    categories.set(cats);
-    if (cats.length > 0) {
-      const first = cats[0].id;
-      activeCategoryId.set(first);
-      cards.set(await db.getCardsByCategory(first));
+    try {
+      await ensureSeeded();
+      const cats = await db.getCategories();
+      categories.set(cats);
+      if (cats.length > 0) {
+        const first = cats[0].id;
+        activeCategoryId.set(first);
+        cards.set(await db.getCardsByCategory(first));
+      }
+    } catch (e) {
+      error = e instanceof Error ? e.message : 'Error al cargar el catálogo.';
+    } finally {
+      loading = false;
     }
-    loading = false;
   });
 
   // react al cambio de categoría
@@ -68,6 +77,8 @@
 
   {#if loading}
     <p class="hint">Cargando…</p>
+  {:else if error}
+    <p class="hint" role="alert">{error} Recarga la página para reintentar.</p>
   {:else if cardList.current.length === 0}
     <p class="hint">Sin tarjetas en esta categoría.</p>
   {:else}

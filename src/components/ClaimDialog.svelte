@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { getInviteCode, getDeviceMode, clearDeviceRegistration } from '../lib/user';
+  import { getInviteCode, getDeviceMode, clearDeviceRegistration, restoreProfileFromBackup } from '../lib/user';
   import { claimInviteCode, normalizeDigits, displayValue, buildFullCode, isCodeComplete } from '../lib/claim';
 
   let registered = $state(false);
@@ -12,7 +12,10 @@
   let checked = $state(false);
   let inputEl: HTMLInputElement;
 
-  onMount(() => {
+  onMount(async () => {
+    // si Android limpió localStorage pero IndexedDB conserva el perfil, restaurarlo
+    await restoreProfileFromBackup();
+
     registered = getInviteCode() !== null;
     demo = getDeviceMode() === 'demo';
 

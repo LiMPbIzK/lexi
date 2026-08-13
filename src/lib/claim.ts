@@ -2,7 +2,7 @@
 // Cada dispositivo debe registrar un código emitido manualmente antes de
 // poder subir/reproducir audio.
 
-import { getUserId, saveInviteCode, saveDeviceMode } from './user';
+import { getUserId, saveInviteCode, saveDeviceMode, saveDeviceToken, getDeviceToken } from './user';
 
 export interface ClaimResult {
   ok: boolean;
@@ -44,23 +44,43 @@ export function normalizeCode(raw: string): string {
   return buildFullCode(normalizeDigits(raw));
 }
 
-/** Envía el código al servidor y, si es válido, lo guarda localmente. */
+async function doClaim(code: string, deviceToken: string | null): Promise<Response> {
+  const headers: Record<string, string> = {
+    'Content-Type': 'application/json',
+    'X-Device-Id': getUserId()
+  };
+  if (deviceToken) headers['X-Device-Token'] = deviceToken;
+
+  return fetch('/api/claim', {
+    method: 'POST',
+    headers,
+    body: JSON.stringify({ code })
+  });
+}
+
+/**
+ * Envía el código al servidor y, si es válido, lo guarda localmente.
+ * Si el servidor dice "ya usado" (409) y el dispositivo conserva el token de
+ * recuperación del código, reintenta automáticamente con ese token (caso en el
+ * que el navegador perdió el UUID y el mismo usuario recupera su dispositivo).
+ */
 export async function claimInviteCode(code: string): Promise<ClaimResult> {
   try {
-    const res = await fetch('/api/claim', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-Device-Id': getUserId()
-      },
-      body: JSON.stringify({ code })
-    });
+    const savedToken = getDeviceToken();
+    let res = await doClaim(code, savedToken);
+
+    // Recuperación automática: 409 pero tenemos token guardado
+    if (res.status === 409 && savedToken) {
+      res = await doClaim(code, savedToken);
+    }
 
     if (res.ok) {
-      const data = (await res.json()) as { mode?: 'full' | 'demo' };
+      const data = (await res.json()) as { mode?: 'full' | 'demo'; token?: string };
+      const mode = data.mode ?? 'full';
       saveInviteCode(code.trim().toUpperCase());
-      saveDeviceMode(data.mode ?? 'full');
-      return { ok: true, mode: data.mode ?? 'full' };
+      saveDeviceMode(mode);
+      if (data.token) saveDeviceToken(data.token);
+      return { ok: true, mode };
     }
 
     let message = 'No se pudo registrar el dispositivo.';

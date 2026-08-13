@@ -1,12 +1,12 @@
 import type { Env } from '../env';
-import { getDeviceId, claimCode } from '../lib/auth';
+import { getDeviceId, getDeviceToken, claimCode } from '../lib/auth';
 
 /**
  * POST /api/claim
  * Body: { "code": "LEXI-XXXX" }
- * Cabecera X-Device-Id: UUID del dispositivo.
- * Registra el dispositivo si el código es válido y no está usado/revocado.
- * Devuelve { ok, mode }.
+ * Cabecera X-Device-Id: UUID del dispositivo (obligatoria).
+ * Cabecera X-Device-Token: token de recuperación (opcional, para re-claim).
+ * Devuelve { ok, mode, token }.
  */
 export async function onRequestPost(context: {
   request: Request;
@@ -22,6 +22,8 @@ export async function onRequestPost(context: {
     );
   }
 
+  const deviceToken = getDeviceToken(request);
+
   let body: { code?: string };
   try {
     body = await request.json();
@@ -30,11 +32,11 @@ export async function onRequestPost(context: {
   }
 
   const code = typeof body.code === 'string' ? body.code : '';
-  const { status, mode } = await claimCode(env, code, deviceId);
+  const { status, mode, token } = await claimCode(env, code, deviceId, deviceToken);
 
   switch (status) {
     case 'ok':
-      return Response.json({ ok: true, mode }, { status: 200 });
+      return Response.json({ ok: true, mode, token }, { status: 200 });
     case 'invalid':
       return Response.json({ error: 'Código de invitación no válido.' }, { status: 404 });
     case 'used':

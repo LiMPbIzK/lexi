@@ -5,13 +5,14 @@ import { openDB, type IDBPDatabase } from 'idb';
 import type { Card, Category, RecordItem, User } from './types';
 
 const DB_NAME = 'lexi';
-const DB_VERSION = 2;
+const DB_VERSION = 3;
 
 export interface LexiSchema {
   users: User;
   categories: Category;
   cards: Card;
   events: RecordItem;
+  meta: { key: string; value: string };
 }
 
 let dbPromise: Promise<IDBPDatabase<LexiSchema>> | null = null;
@@ -42,6 +43,9 @@ export function getDB(): Promise<IDBPDatabase<LexiSchema>> {
         if (!db.objectStoreNames.contains('events')) {
           const s = db.createObjectStore('events', { keyPath: 'id' });
           s.createIndex('by_at', 'at');
+        }
+        if (!db.objectStoreNames.contains('meta')) {
+          db.createObjectStore('meta', { keyPath: 'key' });
         }
       }
     });
@@ -113,6 +117,24 @@ export const db = {
 
   async clearEvents(): Promise<void> {
     await clear('events');
+  },
+
+  // --- meta (perfil del dispositivo en IndexedDB como respaldo) ---
+
+  async getMeta(key: string): Promise<string | undefined> {
+    const db = await getDB();
+    const row = await db.get('meta', key);
+    return row?.value;
+  },
+
+  async setMeta(key: string, value: string): Promise<void> {
+    const db = await getDB();
+    await db.put('meta', { key, value });
+  },
+
+  async removeMeta(key: string): Promise<void> {
+    const db = await getDB();
+    await db.delete('meta', key);
   }
 };
 

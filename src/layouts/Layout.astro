@@ -2,6 +2,7 @@
 import ThemeSelector from '../components/ThemeSelector.svelte';
 import VoiceSelector from '../components/VoiceSelector.svelte';
 import ConnectionStatus from '../components/ConnectionStatus.svelte';
+import FeedbackButton from '../components/FeedbackButton.svelte';
 import '../styles/global.css';
 import '../styles/themes.css';
 
@@ -41,8 +42,24 @@ const currentYear = new Date().getFullYear();
 
     <slot />
 
+    <FeedbackButton />
+
     <footer class="footer">
       <p>LeXi — Comunicador AAC · © {currentYear}</p>
+      <p class="footer-attribution">
+        Símbolos pictográficos propiedad del Gobierno de Aragón, creados por
+        Sergio Palao para{' '}
+        <a href="https://arasaac.org" rel="noopener noreferrer" target="_blank">ARASAAC</a>{' '}
+        (licencia{' '}
+        <a
+          href="https://creativecommons.org/licenses/by-nc-sa/4.0/"
+          rel="noopener noreferrer"
+          target="_blank"
+        >
+          CC BY-NC-SA 4.0
+        </a>
+        ).
+      </p>
     </footer>
 
     <script>

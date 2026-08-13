@@ -29,9 +29,10 @@ export async function onRequestPost(context: {
     return new Response('ok', { status: 200 });
   }
 
-  const token = env.TELEGRAM_BOT_TOKEN;
-  const ownerChatId = Number(env.OWNER_CHAT_ID);
-  if (!token || !ownerChatId) {
+  const token = (env.TELEGRAM_BOT_TOKEN ?? '').trim();
+  const rawOwner = String(env.OWNER_CHAT_ID ?? '').trim();
+  const ownerChatId = parseInt(rawOwner, 10);
+  if (!token || !Number.isFinite(ownerChatId)) {
     return new Response('Bot no configurado', { status: 500 });
   }
 

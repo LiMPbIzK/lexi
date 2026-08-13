@@ -19,7 +19,7 @@
 ## Arquitectura decidida (por implementar)
 - Astro SSG + islas **Svelte** + `@vite-pwa/astro` (SW/manifest en Hito1).
   - **Svelte 5 ESTRICTO:** Utiliza EXCLUSIVAMENTE la nueva sintaxis de Runas de Svelte 5 (`$state`, `$derived`, `$props`, etc.). NUNCA uses la sintaxis antigua de Svelte 4 (como `export let` o declaraciones reactivas con `$:`).
-  - **Estado global:** Para compartir estado entre múltiples islas Svelte aisladas dentro de Astro, utiliza exclusivamente `nanostores` (`@nanostores/svelte`), NUNCA los stores internos de Svelte.
+  - **Estado global:** Para compartir estado entre múltiples islas Svelte aisladas dentro de Astro, utiliza exclusivamente `nanostores` con el adapter `@nanostores/svelte-runes` (función `useStore()`), NUNCA los stores internos de Svelte.
 - **Offline-first:** IndexedDB es la fuente de verdad del día a día. 
   - Utiliza un wrapper basado en promesas como `idb` o `dexie` para IndexedDB. NO utilices la API nativa `window.indexedDB` directamente.
 - Cloudflare **D1** para sync/backend, **R2** para audio/imágenes (lectura vía proxy en el

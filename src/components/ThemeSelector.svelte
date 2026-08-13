@@ -38,7 +38,24 @@
     aria-label="Cambiar tema"
     aria-expanded={open}
   >
-    🎨
+    <svg
+      class="palette-icon"
+      viewBox="0 0 24 24"
+      width="22"
+      height="22"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      aria-hidden="true"
+    >
+      <path d="M12 22a10 10 0 1 1 10-10c0 1.5-1.2 2.5-2.5 2.5H16a2.5 2.5 0 0 0-1.9 4.1c.5.6.4 1.6-.7 2.1-.8.3-1.4.5-1.4.8v.5Z" />
+      <circle cx="7.5" cy="11.5" r="1.2" fill="currentColor" />
+      <circle cx="10.5" cy="7.5" r="1.2" fill="currentColor" />
+      <circle cx="15" cy="7.5" r="1.2" fill="currentColor" />
+      <circle cx="18" cy="11" r="1.2" fill="currentColor" />
+    </svg>
   </button>
 
   {#if open}
@@ -69,11 +86,17 @@
     width: 2.75rem;
     height: 2.75rem;
     border-radius: 50%;
-    font-size: 1.25rem;
-    display: grid;
-    place-items: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     border: 1px solid var(--border);
     background: var(--surface);
+    color: var(--text);
+    padding: 0;
+  }
+
+  .palette-icon {
+    display: block;
   }
 
   .theme-menu {

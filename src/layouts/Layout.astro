@@ -1,5 +1,7 @@
 ---
 import ThemeSelector from '../components/ThemeSelector.svelte';
+import VoiceSelector from '../components/VoiceSelector.svelte';
+import ConnectionStatus from '../components/ConnectionStatus.svelte';
 import '../styles/global.css';
 import '../styles/themes.css';
 
@@ -25,8 +27,16 @@ const currentYear = new Date().getFullYear();
   </head>
   <body>
     <header class="topbar">
-      <span class="logo">LeXi</span>
-      <ThemeSelector client:load />
+      <div class="brand">
+        <span class="logo">LeXi</span>
+        <span class="tagline">Comunicador AAC</span>
+      </div>
+
+      <div class="topbar-controls">
+        <VoiceSelector client:load />
+        <ConnectionStatus client:load />
+        <ThemeSelector client:load />
+      </div>
     </header>
 
     <slot />

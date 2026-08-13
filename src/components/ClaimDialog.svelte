@@ -1,0 +1,255 @@
+<script lang="ts">
+  import { onMount } from 'svelte';
+  import { getInviteCode, getDeviceMode } from '../lib/user';
+  import { claimInviteCode, normalizeDigits, displayValue, buildFullCode, isCodeComplete } from '../lib/claim';
+
+  let registered = $state(false);
+  let demo = $state(false);
+  let digits = $state('');
+  let busy = $state(false);
+  let error = $state<string | null>(null);
+  let checked = $state(false);
+  let inputEl: HTMLInputElement;
+
+  onMount(() => {
+    registered = getInviteCode() !== null;
+    demo = getDeviceMode() === 'demo';
+
+    // Auto-canjeo desde ?code=
+    const urlCode = new URLSearchParams(window.location.search).get('code');
+    if (!registered && urlCode) {
+      const d = normalizeDigits(urlCode);
+      digits = d;
+      if (inputEl) inputEl.value = displayValue(d);
+      if (isCodeComplete(d)) {
+        submit();
+      }
+    }
+    checked = true;
+  });
+
+  /**
+   * Input no controlado: manipulamos el value a mano para preservar el caret.
+   * Se normalizan los dígitos, se reinserta el guión y se reposiciona el cursor.
+   * Si el usuario pega el código completo (LEXI-XXXX-XXXX), se elimina el
+   * prefijo del value mostrado (el prefijo LEXI- ya está fuera del input).
+   */
+  function onInput() {
+    const raw = inputEl.value;
+    const newDigits = normalizeDigits(raw);
+    const showPrefix = raw.toUpperCase().startsWith('LEXI');
+
+    // solo actualizamos si cambió algo que lo merezca
+    if (newDigits !== digits) {
+      const caret = inputEl.selectionStart ?? raw.length;
+      const hadHyphen = digits.length > 4;
+      const willHaveHyphen = newDigits.length > 4;
+
+      digits = newDigits;
+      const next = displayValue(newDigits);
+      inputEl.value = next;
+
+      // reposicionar el caret teniendo en cuenta el guión insertado/quitado
+      let pos = Math.min(caret, next.length);
+      if (showPrefix) pos = Math.max(0, pos - 5);
+      if (willHaveHyphen && !hadHyphen && pos > 4) pos = pos + 1;
+      else if (hadHyphen && !willHaveHyphen && pos > 4) pos = pos - 1;
+      else if (willHaveHyphen && hadHyphen && pos === 5) pos = pos - 1;
+      inputEl.setSelectionRange(pos, pos);
+    } else if (inputEl.value !== displayValue(newDigits)) {
+      // sin cambio de dígitos pero con formato distinto (p. ej. pegó "XXXX-XXXX")
+      const caret = inputEl.selectionStart ?? inputEl.value.length;
+      inputEl.value = displayValue(newDigits);
+      inputEl.setSelectionRange(Math.min(caret, inputEl.value.length), Math.min(caret, inputEl.value.length));
+    }
+  }
+
+  async function submit() {
+    if (!isCodeComplete(digits) || busy) return;
+    busy = true;
+    error = null;
+    const code = buildFullCode(digits);
+    const res = await claimInviteCode(code);
+    busy = false;
+    if (res.ok) {
+      registered = true;
+      demo = res.mode === 'demo';
+      const url = new URL(window.location.href);
+      url.searchParams.delete('code');
+      window.history.replaceState({}, '', url);
+    } else {
+      error = res.error ?? 'Error desconocido.';
+    }
+  }
+</script>
+
+{#if checked && !registered}
+  <div class="claim-overlay" role="dialog" aria-modal="true" aria-labelledby="claim-title">
+    <div class="claim-card">
+      <h2 id="claim-title">Bienvenido a LeXi</h2>
+      <p class="claim-text">
+        Introduce el código de invitación que te han facilitado para activar este
+        dispositivo.
+      </p>
+
+      <div class="claim-field" onclick={() => inputEl.focus()}>
+        <span class="claim-prefix" aria-hidden="true">LEXI-</span>
+        <input
+          bind:this={inputEl}
+          class="claim-input"
+          type="text"
+          placeholder="XXXX-XXXX"
+          inputmode="text"
+          autocomplete="off"
+          autocapitalize="characters"
+          autocorrect="off"
+          spellcheck={false}
+          maxlength="14"
+          aria-label="Código de invitación (parte después de LEXI-)"
+          oninput={onInput}
+          onkeydown={(e) => {
+            if (e.key === 'Enter') submit();
+          }}
+        />
+      </div>
+
+      {#if error}
+        <p class="claim-error" role="alert">{error}</p>
+      {/if}
+
+      <button
+        type="button"
+        class="claim-btn"
+        onclick={submit}
+        disabled={busy || !isCodeComplete(digits)}
+      >
+        {busy ? 'Registrando…' : 'Activar dispositivo'}
+      </button>
+      <p class="claim-note">El código solo se puede usar en un dispositivo.</p>
+    </div>
+  </div>
+{/if}
+
+{#if checked && registered && demo}
+  <div class="demo-badge" role="status">
+    <span class="demo-dot" aria-hidden="true"></span>
+    Modo demo — no se puede grabar audio
+  </div>
+{/if}
+
+<style>
+  .claim-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 50;
+    display: grid;
+    place-items: center;
+    background: color-mix(in srgb, var(--bg) 85%, transparent);
+    padding: 1rem;
+  }
+
+  .claim-card {
+    width: 100%;
+    max-width: 22rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .claim-card h2 {
+    font-size: 1.4rem;
+  }
+
+  .claim-text {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+  }
+
+  .claim-field {
+    display: flex;
+    align-items: center;
+    border: 1px solid var(--border);
+    border-radius: calc(var(--radius) / 2);
+    background: var(--surface-alt);
+    overflow: hidden;
+    cursor: text;
+  }
+
+  .claim-field:focus-within {
+    outline: 3px solid var(--focus-ring);
+    outline-offset: 2px;
+  }
+
+  .claim-prefix {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    padding-left: 1rem;
+    user-select: none;
+  }
+
+  .claim-input {
+    flex: 1;
+    font: inherit;
+    font-size: 1.1rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 0.75rem 1rem;
+    border: none;
+    background: transparent;
+    color: var(--text);
+    min-width: 0;
+  }
+
+  .claim-input:focus {
+    outline: none;
+  }
+
+  .claim-btn {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: #fff;
+    font-weight: 700;
+    padding: 0.75rem 1rem;
+  }
+
+  .claim-btn:disabled {
+    opacity: 0.5;
+  }
+
+  .claim-error {
+    color: var(--error);
+    font-size: 0.9rem;
+  }
+
+  .claim-note {
+    color: var(--text-muted);
+    font-size: 0.78rem;
+  }
+
+  .demo-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0 1rem;
+    padding: 0.45rem 0.9rem;
+    border-radius: 999px;
+    background: var(--accent-soft);
+    color: var(--text);
+    font-size: 0.85rem;
+    font-weight: 600;
+  }
+
+  .demo-dot {
+    width: 0.55rem;
+    height: 0.55rem;
+    border-radius: 50%;
+    background: var(--accent);
+  }
+</style>

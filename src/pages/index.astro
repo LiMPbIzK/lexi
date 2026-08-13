@@ -1,12 +1,20 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import CardGrid from '../components/CardGrid.svelte';
+import SentenceBar from '../components/SentenceBar.svelte';
+import VirtualKeyboard from '../components/VirtualKeyboard.svelte';
+import ClaimDialog from '../components/ClaimDialog.svelte';
 ---
 
-<Layout title="LeXi">
-  <main class="app">
-    <section class="hero">
-      <h1>LeXi</h1>
-      <p>Comunicador AAC · PWA offline-first</p>
-    </section>
+<Layout title="Comunicador">
+  <main class="app communicator">
+    <ClaimDialog client:load />
+
+    <CardGrid client:load />
+
+    <div class="bottom-stack">
+      <VirtualKeyboard client:load />
+      <SentenceBar client:load />
+    </div>
   </main>
 </Layout>

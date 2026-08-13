@@ -10,7 +10,7 @@
     "preview": "astro preview",
     "astro": "astro",
     "check": "astro check",
-    "check:functions": "tsc --noEmit --skipLibCheck --target ES2022 --module ESNext --moduleResolution bundler --strict functions/api/upload.ts \"functions/api/audio/[[key]].ts\" functions/env.d.ts",
+    "check:functions": "tsc --noEmit --skipLibCheck --target ES2022 --module ESNext --moduleResolution bundler --strict functions/api/upload.ts \"functions/api/audio/[[key]].ts\" functions/api/claim.ts functions/telegram/webhook.ts functions/env.d.ts",
     "icons": "node scripts/generate-icons.mjs",
     "db:local": "wrangler d1 migrations apply lexidb --local",
     "db:remote": "wrangler d1 migrations apply lexidb --remote",
@@ -18,8 +18,10 @@
   },
   "dependencies": {
     "@astrojs/svelte": "^7.0.5",
+    "@nanostores/svelte-runes": "^1.0.1",
     "@vite-pwa/astro": "^1.2.0",
     "astro": "^5.0.0",
+    "nanostores": "^1.4.2",
     "svelte": "^5.1.16"
   },
   "devDependencies": {

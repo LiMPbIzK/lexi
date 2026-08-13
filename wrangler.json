@@ -8,6 +8,12 @@
 	"observability": {
 		"enabled": true
 	},
+	"vars": {
+		"MAX_AUDIO_PER_DEVICE": 100,
+		"MAX_BYTES_PER_DEVICE": 104857600,
+		"MAX_UPLOADS_PER_HOUR": 20,
+		"MAX_RECORDING_MS": 15000
+	},
 	"d1_databases": [
 		{
 			"binding": "DB",

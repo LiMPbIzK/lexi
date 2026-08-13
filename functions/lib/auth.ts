@@ -58,10 +58,15 @@ export async function claimCode(
     try {
       // code = NULL: la columna es UNIQUE y el demo es compartible entre muchos
       // dispositivos, así que no podemos reutilizar 'LEXI-DEMO-CODE' como clave.
+      // Al hacer conflict se resetea el modo a demo (permite volver a demo).
       await env.DB.prepare(
         `INSERT INTO devices (id, code, label, created_at, last_seen_at, mode)
          VALUES (?, NULL, ?, ?, ?, 'demo')
-         ON CONFLICT(id) DO UPDATE SET last_seen_at = excluded.last_seen_at`
+         ON CONFLICT(id) DO UPDATE SET
+           code = NULL,
+           label = excluded.label,
+           mode = 'demo',
+           last_seen_at = excluded.last_seen_at`
       ).bind(deviceId, DEMO_LABEL, now, now).run();
     } catch (e) {
       console.error('claim demo error:', e);
@@ -95,7 +100,11 @@ export async function claimCode(
       env.DB.prepare(
         `INSERT INTO devices (id, code, label, created_at, last_seen_at, mode)
          VALUES (?, ?, ?, ?, ?, 'full')
-         ON CONFLICT(id) DO UPDATE SET last_seen_at = excluded.last_seen_at`
+         ON CONFLICT(id) DO UPDATE SET
+           code = excluded.code,
+           label = excluded.label,
+           mode = 'full',
+           last_seen_at = excluded.last_seen_at`
       ).bind(deviceId, normalized, row.label, now, now)
     ]);
   } catch {

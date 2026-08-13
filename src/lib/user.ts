@@ -39,6 +39,12 @@ export function saveDeviceMode(mode: 'full' | 'demo'): void {
   localStorage.setItem(MODE_KEY, mode);
 }
 
+/** Borra el registro local (código + modo) para poder volver a canjear. */
+export function clearDeviceRegistration(): void {
+  localStorage.removeItem(INVITE_KEY);
+  localStorage.removeItem(MODE_KEY);
+}
+
 export function createUser(overrides: Partial<User> = {}): User {
   return {
     id: getUserId(),

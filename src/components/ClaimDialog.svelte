@@ -1,10 +1,11 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { getInviteCode, getDeviceMode } from '../lib/user';
+  import { getInviteCode, getDeviceMode, clearDeviceRegistration } from '../lib/user';
   import { claimInviteCode, normalizeDigits, displayValue, buildFullCode, isCodeComplete } from '../lib/claim';
 
   let registered = $state(false);
   let demo = $state(false);
+  let reRegistering = $state(false);
   let digits = $state('');
   let busy = $state(false);
   let error = $state<string | null>(null);
@@ -27,6 +28,18 @@
     }
     checked = true;
   });
+
+  /** Abandona el modo demo para poder canjear un código real (micrófono). */
+  function switchToFull() {
+    clearDeviceRegistration();
+    registered = false;
+    demo = false;
+    reRegistering = true;
+    digits = '';
+    error = null;
+    // focus del input tras renderizar el diálogo
+    setTimeout(() => inputEl?.focus(), 50);
+  }
 
   /**
    * Input no controlado: manipulamos el value a mano para preservar el caret.
@@ -131,9 +144,14 @@
 {/if}
 
 {#if checked && registered && demo}
-  <div class="demo-badge" role="status">
-    <span class="demo-dot" aria-hidden="true"></span>
-    Modo demo — no se puede grabar audio
+  <div class="demo-bar" role="status">
+    <span class="demo-badge">
+      <span class="demo-dot" aria-hidden="true"></span>
+      Modo demo — no se puede grabar audio
+    </span>
+    <button type="button" class="demo-switch" onclick={switchToFull}>
+      🔓 Usar código completo
+    </button>
   </div>
 {/if}
 
@@ -233,11 +251,20 @@
     font-size: 0.78rem;
   }
 
+  .demo-bar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+    margin: 0 1rem;
+    padding: 0.5rem;
+  }
+
   .demo-badge {
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
-    margin: 0 1rem;
     padding: 0.45rem 0.9rem;
     border-radius: 999px;
     background: var(--accent-soft);
@@ -251,5 +278,20 @@
     height: 0.55rem;
     border-radius: 50%;
     background: var(--accent);
+  }
+
+  .demo-switch {
+    padding: 0.45rem 0.9rem;
+    border-radius: 999px;
+    border: 1px solid var(--primary);
+    background: var(--primary-soft);
+    color: var(--text);
+    font-size: 0.85rem;
+    font-weight: 700;
+  }
+
+  .demo-switch:hover {
+    background: var(--primary);
+    color: #fff;
   }
 </style>

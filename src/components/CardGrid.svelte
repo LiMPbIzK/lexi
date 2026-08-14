@@ -4,7 +4,8 @@
   import { db } from '../lib/db';
   import { seedArasaac, isSeeded, hasCatalog } from '../lib/seed';
   import { getDeviceMode, saveDeviceMode, fetchDeviceStatus } from '../lib/user';
-  import { activeCategoryId, categories, cards, manifest, sentence, syncSentenceWithCards, deviceMode } from '../stores';
+  import { warmFingerprint } from '../lib/fingerprint';
+  import { activeCategoryId, categories, cards, manifest, sentence, syncSentenceWithCards, deviceMode, userName } from '../stores';
   import type { ArasaacManifest, Card } from '../lib/types';
   import CardTile from './CardTile.svelte';
   import CardEditor from './CardEditor.svelte';
@@ -44,6 +45,7 @@
         } else if (status.mode === 'demo') {
           saveDeviceMode('demo');
         }
+        if (status.user) userName.set(status.user);
       } catch {
         /* sin red: mantener estado local */
       }
@@ -57,6 +59,7 @@
         saveDeviceMode('full');
         deviceMode.set('full');
         canEdit = true;
+        if (status.user) userName.set(status.user);
       } else {
         canEdit = false;
       }
@@ -129,6 +132,7 @@
 
   onMount(async () => {
     try {
+      warmFingerprint();
       await ensureSeeded();
       const cats = await db.getCategories();
       categories.set(cats);

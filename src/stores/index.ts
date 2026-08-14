@@ -59,6 +59,9 @@ export const reproducing = atom<boolean>(false);
 // (al refrescar), para que el grid reaccione al cambio de modo sin re-montar.
 export const deviceMode = atom<'full' | 'demo' | null>(null);
 
+// Nombre de usuario del código canjeado (para "Bienvenido, {user}")
+export const userName = atom<string | null>(null);
+
 /**
  * Re-sincroniza las palabras de la frase contra el estado actual de las tarjetas.
  * Si una tarjeta perdió su audio personalizado, la palabra deja de estar marcada

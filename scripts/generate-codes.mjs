@@ -5,12 +5,11 @@
  * Genera códigos, los imprime y opcionalmente los inserta directamente en D1.
  *
  * Uso:
- *   node scripts/generate-codes.mjs                          # 5 códigos
- *   node scripts/generate-codes.mjs 3                        # 3 códigos
- *   node scripts/generate-codes.mjs 3 "Tablet casa García"   # con etiqueta
- *   node scripts/generate-codes.mjs 3 "Familia" --local      # inserta en D1 local
- *   node scripts/generate-codes.mjs 3 "Familia" --remote     # inserta en D1 remoto
- *   node scripts/generate-codes.mjs --sql file.sql           # solo escribe SQL a archivo
+ *   node scripts/generate-codes.mjs 1 "Tablet casa García" "Marta" --remote
+ *   node scripts/generate-codes.mjs 1 "Tablet" "Marta" --local
+ *   node scripts/generate-codes.mjs --sql file.sql
+ *
+ * El USUARIO es obligatorio (trazabilidad de quién usa cada código).
  */
 
 import { randomBytes } from 'node:crypto';
@@ -21,8 +20,9 @@ import { fileURLToPath } from 'node:url';
 const argv = process.argv.slice(2);
 
 const parseArgs = () => {
-  let count = 5;
+  let count = 1;
   let label = 'Dispositivo';
+  let user = null;
   let target = null; // 'local' | 'remote'
   let sqlFile = null;
 
@@ -35,10 +35,11 @@ const parseArgs = () => {
     } else if (/^\d+$/.test(a)) {
       count = Math.min(parseInt(a, 10), 50);
     } else if (!a.startsWith('--')) {
-      label = a;
+      if (!label || label === 'Dispositivo') label = a;
+      else user = a;
     }
   }
-  return { count, label, target, sqlFile };
+  return { count, label, user, target, sqlFile };
 };
 
 const ALPHABET = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789'; // sin I, L, O, 0, 1
@@ -52,9 +53,15 @@ function randPart(len) {
 }
 
 async function main() {
-  const { count, label, target, sqlFile } = parseArgs();
-  const now = Date.now();
+  const { count, label, user, target, sqlFile } = parseArgs();
 
+  if (!user) {
+    console.error('✗ El USUARIO es obligatorio.');
+    console.error('  Uso: node scripts/generate-codes.mjs 1 "Tablet casa García" "Marta" --remote');
+    process.exit(1);
+  }
+
+  const now = Date.now();
   const codes = [];
   for (let i = 0; i < count; i++) {
     codes.push(`LEXI-${randPart(4)}-${randPart(4)}`);
@@ -62,7 +69,7 @@ async function main() {
 
   console.log('\nCódigos generados:');
   for (const c of codes) {
-    console.log(`  ${c}  →  ${label}`);
+    console.log(`  ${c}  →  ${label} (${user})`);
   }
   console.log();
 
@@ -70,7 +77,7 @@ async function main() {
     const sql = codes
       .map(
         (c) =>
-          `INSERT OR IGNORE INTO invite_codes (code, label, created_at) VALUES ('${c}', '${label}', ${now});`
+          `INSERT OR IGNORE INTO invite_codes (code, label, user, created_at) VALUES ('${c}', '${label}', '${user}', ${now});`
       )
       .join('\n');
     writeFileSync(sqlFile, sql + '\n');
@@ -79,9 +86,9 @@ async function main() {
 
   if (target) {
     const values = codes
-      .map((c) => `('${c}', '${label}', ${now})`)
+      .map((c) => `('${c}', '${label}', '${user}', ${now})`)
       .join(', ');
-    const sql = `INSERT OR IGNORE INTO invite_codes (code, label, created_at) VALUES ${values};`;
+    const sql = `INSERT OR IGNORE INTO invite_codes (code, label, user, created_at) VALUES ${values};`;
     console.log(`→ Insertando en D1 (${target})...`);
     const wranglerBin = fileURLToPath(new URL('../node_modules/wrangler/bin/wrangler.js', import.meta.url));
     const res = spawnSync(

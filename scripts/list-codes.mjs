@@ -14,7 +14,7 @@ import { fileURLToPath } from 'node:url';
 
 const target = process.argv.includes('--remote') ? '--remote' : '--local';
 
-const sql = `SELECT code, label, created_at, claimed_by, claimed_at, revoked_at
+const sql = `SELECT code, label, user, created_at, claimed_by, claimed_at, revoked_at
 FROM invite_codes
 ORDER BY created_at DESC LIMIT 100;`;
 
@@ -52,7 +52,7 @@ for (const r of rows) {
   else if (r.claimed_by) state = '🔵 Usado';
 
   console.log(`  ${r.code}`);
-  console.log(`    Etiqueta: ${r.label}`);
+  console.log(`    Etiqueta: ${r.label}${r.user ? ` · Usuario: ${r.user}` : ''}`);
   console.log(`    Alta: ${alta} · ${state}`);
   if (r.claimed_by) {
     console.log(`    UUID: ${r.claimed_by}`);

@@ -3,6 +3,7 @@ import ThemeSelector from '../components/ThemeSelector.svelte';
 import VoiceSelector from '../components/VoiceSelector.svelte';
 import ConnectionStatus from '../components/ConnectionStatus.svelte';
 import FeedbackButton from '../components/FeedbackButton.svelte';
+import UserGreeting from '../components/UserGreeting.svelte';
 import '../styles/global.css';
 import '../styles/themes.css';
 
@@ -34,6 +35,7 @@ const currentYear = new Date().getFullYear();
       </div>
 
       <div class="topbar-controls">
+        <UserGreeting client:load />
         <VoiceSelector client:load />
         <ConnectionStatus client:load />
         <ThemeSelector client:load />

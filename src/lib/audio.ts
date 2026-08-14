@@ -3,13 +3,14 @@
 // Todas las peticiones llevan X-Device-Id (credencial débil del dispositivo).
 
 import { getUserId } from './user';
+import { identityHeaders } from './fingerprint';
 
 function isBrowser(): boolean {
   return typeof window !== 'undefined';
 }
 
 function deviceHeaders(): Record<string, string> {
-  return { 'X-Device-Id': getUserId() };
+  return identityHeaders();
 }
 
 // Audio actualmente en reproducción (para poder detenerlo con Parar)

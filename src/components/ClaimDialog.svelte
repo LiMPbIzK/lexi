@@ -1,8 +1,8 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { getInviteCode, getDeviceMode, clearDeviceRegistration, restoreProfileFromBackup } from '../lib/user';
+  import { getInviteCode, getDeviceMode, clearDeviceRegistration, restoreProfileFromBackup, saveUserName, getUserName } from '../lib/user';
   import { claimInviteCode, normalizeDigits, displayValue, buildFullCode, isCodeComplete } from '../lib/claim';
-  import { deviceMode } from '../stores';
+  import { deviceMode, userName } from '../stores';
 
   let registered = $state(false);
   let demo = $state(false);
@@ -20,6 +20,7 @@
     registered = getInviteCode() !== null;
     demo = getDeviceMode() === 'demo';
     deviceMode.set(getDeviceMode());
+    userName.set(getUserName());
 
     // Auto-canjeo desde ?code=
     const urlCode = new URLSearchParams(window.location.search).get('code');
@@ -94,6 +95,10 @@
       registered = true;
       demo = res.mode === 'demo';
       deviceMode.set(res.mode ?? 'full');
+      if (res.user) {
+        saveUserName(res.user);
+        userName.set(res.user);
+      }
       const url = new URL(window.location.href);
       url.searchParams.delete('code');
       window.history.replaceState({}, '', url);

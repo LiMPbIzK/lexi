@@ -5,6 +5,7 @@ import type { Env } from '../env';
 
 export const DEVICE_HEADER = 'x-device-id';
 export const TOKEN_HEADER = 'x-device-token';
+export const FINGERPRINT_HEADER = 'x-device-fingerprint';
 
 // Código demo compartible: registra el dispositivo en modo solo lectura.
 export const DEMO_CODE = 'LEXI-DEMO-CODE';
@@ -18,6 +19,7 @@ export interface ClaimResult {
   status: ClaimStatus;
   mode: DeviceMode;
   token?: string;
+  user?: string;
 }
 
 function newToken(): string {
@@ -43,6 +45,13 @@ export function getDeviceToken(request: Request): string | null {
   return /^[0-9a-f-]{8,64}$/i.test(t) ? t.toLowerCase() : null;
 }
 
+/** Fingerprint del dispositivo enviado por el cliente (hash SHA-256 hex). */
+export function getDeviceFingerprint(request: Request): string | null {
+  const f = request.headers.get(FINGERPRINT_HEADER);
+  if (!f) return null;
+  return /^[0-9a-f]{64}$/i.test(f) ? f.toLowerCase() : null;
+}
+
 /** Indica si el dispositivo está registrado (ha canjeado un código). */
 export async function isDeviceRegistered(env: Env, deviceId: string): Promise<boolean> {
   const row = await env.DB.prepare('SELECT id FROM devices WHERE id = ?')
@@ -63,14 +72,16 @@ export async function getDeviceMode(env: Env, deviceId: string): Promise<DeviceM
  * Intenta canjear un código de invitación para este dispositivo.
  * - Para códigos full: si el código ya está reclamado por OTRO device y el
  *   cliente presenta el `device_token` que coincide con el de ese device,
- *   se permite la RECUPERACIÓN: se re-vincula el código a este dispositivo.
- * Devuelve { status, mode, token? }.
+ *   O el `device_fingerprint` coincide con el de ese device, se permite la
+ *   RECUPERACIÓN: se re-vincula el código a este dispositivo.
+ * Devuelve { status, mode, token?, user? }.
  */
 export async function claimCode(
   env: Env,
   code: string,
   deviceId: string,
-  deviceToken: string | null = null
+  deviceToken: string | null = null,
+  deviceFingerprint: string | null = null
 ): Promise<ClaimResult> {
   const normalized = code.trim().toUpperCase();
 
@@ -79,15 +90,16 @@ export async function claimCode(
     const now = Date.now();
     try {
       await env.DB.prepare(
-        `INSERT INTO devices (id, code, label, created_at, last_seen_at, mode, device_token)
-         VALUES (?, NULL, ?, ?, ?, 'demo', ?)
+        `INSERT INTO devices (id, code, label, created_at, last_seen_at, mode, device_token, device_fingerprint)
+         VALUES (?, NULL, ?, ?, ?, 'demo', ?, ?)
          ON CONFLICT(id) DO UPDATE SET
            code = NULL,
            label = excluded.label,
            mode = 'demo',
            device_token = excluded.device_token,
+           device_fingerprint = excluded.device_fingerprint,
            last_seen_at = excluded.last_seen_at`
-      ).bind(deviceId, DEMO_LABEL, now, now, newToken()).run();
+      ).bind(deviceId, DEMO_LABEL, now, now, newToken(), deviceFingerprint).run();
     } catch (e) {
       console.error('claim demo error:', e);
       return { status: 'conflict', mode: 'demo' };
@@ -98,30 +110,41 @@ export async function claimCode(
   if (!/^[A-Z0-9-]{4,40}$/.test(normalized)) return { status: 'invalid', mode: 'full' };
 
   const row = await env.DB.prepare(
-    'SELECT code, claimed_by, label, revoked_at FROM invite_codes WHERE code = ?'
+    'SELECT code, claimed_by, label, user, revoked_at FROM invite_codes WHERE code = ?'
   )
     .bind(normalized)
-    .first<{ code: string; claimed_by: string | null; label: string; revoked_at: number | null }>();
+    .first<{
+      code: string;
+      claimed_by: string | null;
+      label: string;
+      user: string | null;
+      revoked_at: number | null;
+    }>();
+  const codeUser = row?.user ?? '';
 
   if (!row) return { status: 'invalid', mode: 'full' };
   if (row.revoked_at) return { status: 'revoked', mode: 'full' };
 
   // Recuperación: el código está reclamado por otro device, pero el cliente
-  // presenta el token de ese device -> es el mismo usuario recuperando.
+  // presenta el token o el fingerprint de ese device -> es el mismo usuario.
   if (row.claimed_by && row.claimed_by !== deviceId) {
-    if (!deviceToken) return { status: 'used', mode: 'full' };
-
     const owner = await env.DB.prepare(
-      'SELECT device_token FROM devices WHERE id = ?'
+      'SELECT device_token, device_fingerprint FROM devices WHERE id = ?'
     )
       .bind(row.claimed_by)
-      .first<{ device_token: string | null }>();
+      .first<{ device_token: string | null; device_fingerprint: string | null }>();
 
-    if (!owner?.device_token || owner.device_token !== deviceToken) {
+    const tokenMatch = !!owner?.device_token && owner.device_token === deviceToken;
+    const fpMatch =
+      !!owner?.device_fingerprint &&
+      !!deviceFingerprint &&
+      owner.device_fingerprint === deviceFingerprint;
+
+    if (!tokenMatch && !fpMatch) {
       return { status: 'used', mode: 'full' };
     }
 
-    // token válido: re-vincular el código a este dispositivo.
+    // token o fingerprint válido: re-vincular el código a este dispositivo.
     // Se transfieren grabaciones/uso del antiguo device a este.
     const now = Date.now();
     try {
@@ -137,20 +160,21 @@ export async function claimCode(
           'UPDATE invite_codes SET claimed_by = ?, claimed_at = ? WHERE code = ?'
         ).bind(deviceId, now, normalized),
         env.DB.prepare(
-          `INSERT INTO devices (id, code, label, created_at, last_seen_at, mode, device_token)
-           VALUES (?, ?, ?, ?, ?, 'full', ?)
+          `INSERT INTO devices (id, code, label, created_at, last_seen_at, mode, device_token, device_fingerprint)
+           VALUES (?, ?, ?, ?, ?, 'full', ?, ?)
            ON CONFLICT(id) DO UPDATE SET
              code = excluded.code,
              label = excluded.label,
              mode = 'full',
              device_token = excluded.device_token,
+             device_fingerprint = excluded.device_fingerprint,
              last_seen_at = excluded.last_seen_at`
-        ).bind(deviceId, normalized, row.label, now, now, deviceToken)
+        ).bind(deviceId, normalized, row.label, now, now, deviceToken, deviceFingerprint)
       ]);
     } catch {
       return { status: 'conflict', mode: 'full' };
     }
-    return { status: 'ok', mode: 'full', token: deviceToken };
+    return { status: 'ok', mode: 'full', token: deviceToken ?? undefined, user: codeUser };
   }
 
   // Claim normal o re-claim del mismo dispositivo
@@ -162,20 +186,21 @@ export async function claimCode(
         'UPDATE invite_codes SET claimed_by = ?, claimed_at = ? WHERE code = ?'
       ).bind(deviceId, now, normalized),
       env.DB.prepare(
-        `INSERT INTO devices (id, code, label, created_at, last_seen_at, mode, device_token)
-         VALUES (?, ?, ?, ?, ?, 'full', ?)
+        `INSERT INTO devices (id, code, label, created_at, last_seen_at, mode, device_token, device_fingerprint)
+         VALUES (?, ?, ?, ?, ?, 'full', ?, ?)
          ON CONFLICT(id) DO UPDATE SET
            code = excluded.code,
            label = excluded.label,
            mode = 'full',
            device_token = excluded.device_token,
+           device_fingerprint = excluded.device_fingerprint,
            last_seen_at = excluded.last_seen_at`
-      ).bind(deviceId, normalized, row.label, now, now, token)
+      ).bind(deviceId, normalized, row.label, now, now, token, deviceFingerprint)
     ]);
   } catch {
     return { status: 'conflict', mode: 'full' };
   }
-  return { status: 'ok', mode: 'full', token };
+  return { status: 'ok', mode: 'full', token, user: codeUser };
 }
 
 /** Revoca un código (si existe y no está revocado ya). Devuelve true si se revocó. */
@@ -188,3 +213,4 @@ export async function revokeCode(env: Env, code: string): Promise<boolean> {
     .run();
   return res.meta.changes > 0;
 }
+

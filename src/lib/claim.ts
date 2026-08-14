@@ -2,11 +2,13 @@
 // Cada dispositivo debe registrar un código emitido manualmente antes de
 // poder subir/reproducir audio.
 
-import { getUserId, saveInviteCode, saveDeviceMode, saveDeviceToken, getDeviceToken } from './user';
+import { getUserId, saveInviteCode, saveDeviceMode, saveDeviceToken, getDeviceToken, saveUserName } from './user';
+import { getDeviceFingerprintAsync } from './fingerprint';
 
 export interface ClaimResult {
   ok: boolean;
   mode?: 'full' | 'demo';
+  user?: string;
   error?: string;
 }
 
@@ -50,6 +52,11 @@ async function doClaim(code: string, deviceToken: string | null): Promise<Respon
     'X-Device-Id': getUserId()
   };
   if (deviceToken) headers['X-Device-Token'] = deviceToken;
+  try {
+    headers['X-Device-Fingerprint'] = await getDeviceFingerprintAsync();
+  } catch {
+    /* fingerprint no disponible */
+  }
 
   return fetch('/api/claim', {
     method: 'POST',
@@ -60,27 +67,33 @@ async function doClaim(code: string, deviceToken: string | null): Promise<Respon
 
 /**
  * Envía el código al servidor y, si es válido, lo guarda localmente.
- * Si el servidor dice "ya usado" (409) y el dispositivo conserva el token de
- * recuperación del código, reintenta automáticamente con ese token (caso en el
- * que el navegador perdió el UUID y el mismo usuario recupera su dispositivo).
+ * Si el servidor dice "ya usado" (409) y el dispositivo conserva el token o el
+ * fingerprint, reintenta automáticamente (caso en el que el navegador perdió el
+ * UUID y el mismo usuario recupera su dispositivo).
  */
 export async function claimInviteCode(code: string): Promise<ClaimResult> {
   try {
     const savedToken = getDeviceToken();
     let res = await doClaim(code, savedToken);
 
-    // Recuperación automática: 409 pero tenemos token guardado
-    if (res.status === 409 && savedToken) {
+    // Recuperación automática: 409 pero tenemos token/fingerprint
+    if (res.status === 409) {
       res = await doClaim(code, savedToken);
     }
 
     if (res.ok) {
-      const data = (await res.json()) as { mode?: 'full' | 'demo'; token?: string };
+      const data = (await res.json()) as {
+        mode?: 'full' | 'demo';
+        token?: string;
+        user?: string;
+      };
       const mode = data.mode ?? 'full';
+      const user = data.user ?? '';
       saveInviteCode(code.trim().toUpperCase());
       saveDeviceMode(mode);
       if (data.token) saveDeviceToken(data.token);
-      return { ok: true, mode };
+      if (user) saveUserName(user);
+      return { ok: true, mode, user };
     }
 
     let message = 'No se pudo registrar el dispositivo.';

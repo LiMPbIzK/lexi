@@ -115,7 +115,6 @@ Built for future i18n: `label` is monolingual for now, with a planned path towar
 `card_translations(card_id, locale, label)` when English lands.
 
 ## Roadmap
-
 - [x] Architecture & data-schema definition
 - [x] Astro + Svelte skeleton and first Cloudflare Pages deploy
 - [x] D1 + R2 bindings (Functions/API)

@@ -5,12 +5,14 @@
 // y el dispositivo siga siendo reconocido por el servidor.
 
 import { db } from './db';
+import { getCachedFingerprint } from './fingerprint';
 import type { User } from './types';
 
 const USER_KEY = 'lexi:user-id';
 const INVITE_KEY = 'lexi:invite-code';
 const MODE_KEY = 'lexi:mode';
 const TOKEN_KEY = 'lexi:device-token';
+const USER_NAME_KEY = 'lexi:user';
 
 export function uuid(): string {
   return crypto.randomUUID();
@@ -122,12 +124,36 @@ export function saveDeviceToken(token: string): void {
   void db.setMeta(TOKEN_KEY, token);
 }
 
-/** Borra el registro local (código + modo + token) para poder volver a canjear. */
+// ---------------------------------------------------------------
+// Nombre de usuario del código (para "Bienvenido, {user}")
+// ---------------------------------------------------------------
+
+export function getUserName(): string | null {
+  return localStorage.getItem(USER_NAME_KEY);
+}
+
+export async function getUserNameAsync(): Promise<string | null> {
+  let name = localStorage.getItem(USER_NAME_KEY);
+  if (!name) {
+    name = (await db.getMeta(USER_NAME_KEY)) ?? null;
+    if (name) localStorage.setItem(USER_NAME_KEY, name);
+  }
+  return name;
+}
+
+export function saveUserName(name: string): void {
+  localStorage.setItem(USER_NAME_KEY, name);
+  void db.setMeta(USER_NAME_KEY, name);
+}
+
+/** Borra el registro local (código + modo + token + user) para poder volver a canjear. */
 export function clearDeviceRegistration(): void {
   localStorage.removeItem(INVITE_KEY);
   localStorage.removeItem(MODE_KEY);
+  localStorage.removeItem(USER_NAME_KEY);
   void db.removeMeta(INVITE_KEY);
   void db.removeMeta(MODE_KEY);
+  void db.removeMeta(USER_NAME_KEY);
 }
 
 /** Restaura el perfil desde IndexedDB si localStorage quedó vacío. Devuelve true si restauró algo. */
@@ -161,12 +187,20 @@ export async function restoreProfileFromBackup(): Promise<boolean> {
       restored = true;
     }
   }
+  if (!localStorage.getItem(USER_NAME_KEY)) {
+    const name = await db.getMeta(USER_NAME_KEY);
+    if (name) {
+      localStorage.setItem(USER_NAME_KEY, name);
+      restored = true;
+    }
+  }
   return restored;
 }
 
 export interface DeviceStatus {
   registered: boolean;
   mode: 'full' | 'demo' | null;
+  user?: string;
 }
 
 /**
@@ -175,13 +209,14 @@ export interface DeviceStatus {
  */
 export async function fetchDeviceStatus(): Promise<DeviceStatus> {
   try {
-    const res = await fetch('/api/device/status', {
-      headers: { 'X-Device-Id': getUserId() }
-    });
-    if (!res.ok) return { registered: false, mode: null };
+    const headers: Record<string, string> = { 'X-Device-Id': getUserId() };
+    const fp = getCachedFingerprint();
+    if (fp) headers['X-Device-Fingerprint'] = fp;
+    const res = await fetch('/api/device/status', { headers });
+    if (!res.ok) return { registered: false, mode: null, user: '' };
     return (await res.json()) as DeviceStatus;
   } catch {
-    return { registered: false, mode: null };
+    return { registered: false, mode: null, user: '' };
   }
 }
 

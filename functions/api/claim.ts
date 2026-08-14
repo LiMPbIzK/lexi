@@ -1,12 +1,13 @@
 import type { Env } from '../env';
-import { getDeviceId, getDeviceToken, claimCode } from '../lib/auth';
+import { getDeviceId, getDeviceToken, getDeviceFingerprint, claimCode } from '../lib/auth';
 
 /**
  * POST /api/claim
  * Body: { "code": "LEXI-XXXX" }
  * Cabecera X-Device-Id: UUID del dispositivo (obligatoria).
- * Cabecera X-Device-Token: token de recuperación (opcional, para re-claim).
- * Devuelve { ok, mode, token }.
+ * Cabecera X-Device-Token: token de recuperación (opcional).
+ * Cabecera X-Device-Fingerprint: huella estable del dispositivo (opcional).
+ * Devuelve { ok, mode, token, user }.
  */
 export async function onRequestPost(context: {
   request: Request;
@@ -23,6 +24,7 @@ export async function onRequestPost(context: {
   }
 
   const deviceToken = getDeviceToken(request);
+  const deviceFingerprint = getDeviceFingerprint(request);
 
   let body: { code?: string };
   try {
@@ -32,11 +34,17 @@ export async function onRequestPost(context: {
   }
 
   const code = typeof body.code === 'string' ? body.code : '';
-  const { status, mode, token } = await claimCode(env, code, deviceId, deviceToken);
+  const { status, mode, token, user } = await claimCode(
+    env,
+    code,
+    deviceId,
+    deviceToken,
+    deviceFingerprint
+  );
 
   switch (status) {
     case 'ok':
-      return Response.json({ ok: true, mode, token }, { status: 200 });
+      return Response.json({ ok: true, mode, token, user: user ?? '' }, { status: 200 });
     case 'invalid':
       return Response.json({ error: 'Código de invitación no válido.' }, { status: 404 });
     case 'used':

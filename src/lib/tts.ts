@@ -4,6 +4,7 @@
 import { speaking } from '../stores';
 
 const VOICE_KEY = 'lexi:voice-uri';
+const RATE_KEY = 'lexi:rate';
 
 export type VoiceInfo = {
   uri: string;
@@ -11,6 +12,20 @@ export type VoiceInfo = {
   lang: string;
   local: boolean;
 };
+
+/** Velocidades de reproducción TTS disponibles. */
+export const SPEED_OPTIONS: number[] = [1, 1.5, 2];
+export const DEFAULT_RATE = 1.5;
+
+export function getSavedRate(): number {
+  if (typeof localStorage === 'undefined') return DEFAULT_RATE;
+  const raw = Number(localStorage.getItem(RATE_KEY));
+  return SPEED_OPTIONS.includes(raw) ? raw : DEFAULT_RATE;
+}
+
+export function saveRate(rate: number): void {
+  localStorage.setItem(RATE_KEY, String(rate));
+}
 
 function isSSRAvailable(): boolean {
   return typeof window !== 'undefined' && 'speechSynthesis' in window;
@@ -83,13 +98,20 @@ export function speak(text: string, voiceUri?: string | null): void {
   synth.cancel();
   const utterance = new SpeechSynthesisUtterance(text);
   utterance.lang = 'es-ES';
-  utterance.rate = 1;
+  utterance.rate = getSavedRate();
   const voice = findVoice(voiceUri ?? getSavedVoiceUri());
   if (voice) utterance.voice = voice;
 
+  liveUtterance = null;
   speaking.set(true);
-  utterance.onend = () => speaking.set(false);
-  utterance.onerror = () => speaking.set(false);
+  utterance.onend = () => {
+    liveUtterance = null;
+    speaking.set(false);
+  };
+  utterance.onerror = () => {
+    liveUtterance = null;
+    speaking.set(false);
+  };
 
   synth.speak(utterance);
 }
@@ -99,4 +121,70 @@ export function cancelSpeech(): void {
     window.speechSynthesis.cancel();
   }
   speaking.set(false);
+}
+
+// Referencia al utterance TTS actualmente en reproducción (para cambiar la
+// velocidad en caliente re-creándolo con el nuevo rate).
+let liveUtterance: { text: string; voiceUri: string | null } | null = null;
+
+/**
+ * Cambia la velocidad de reproducción TTS en caliente: guarda el nuevo rate y,
+ * si hay un utterance en reproducción, lo re-crea con la nueva velocidad.
+ * No aplica a audios grabados (playCardAudioEnd), solo al TTS.
+ */
+export function setLiveRate(rate: number): void {
+  saveRate(rate);
+  if (!isSSRAvailable()) return;
+  const synth = window.speechSynthesis;
+  if (liveUtterance) {
+    const { text, voiceUri } = liveUtterance;
+    synth.cancel();
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = 'es-ES';
+    u.rate = rate;
+    const voice = findVoice(voiceUri ?? getSavedVoiceUri());
+    if (voice) u.voice = voice;
+    u.onend = () => {
+      liveUtterance = null;
+      speaking.set(false);
+    };
+    u.onerror = () => {
+      liveUtterance = null;
+      speaking.set(false);
+    };
+    liveUtterance = { text, voiceUri };
+    synth.speak(u);
+  }
+}
+
+/**
+ * Reproduce texto con TTS y resuelve cuando termina (o falla).
+ * Se usa para encadenar la reproducción palabra a palabra en la frase.
+ */
+export function speakEnd(text: string, voiceUri?: string | null): Promise<void> {
+  return new Promise((resolve) => {
+    if (!isSSRAvailable() || !text.trim()) {
+      resolve();
+      return;
+    }
+    const synth = window.speechSynthesis;
+    synth.cancel();
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = 'es-ES';
+    utterance.rate = getSavedRate();
+    const voice = findVoice(voiceUri ?? getSavedVoiceUri());
+    if (voice) utterance.voice = voice;
+
+    speaking.set(true);
+    liveUtterance = { text, voiceUri: voiceUri ?? getSavedVoiceUri() };
+
+    const finish = () => {
+      if (liveUtterance && liveUtterance.text === text) liveUtterance = null;
+      speaking.set(false);
+      resolve();
+    };
+    utterance.onend = finish;
+    utterance.onerror = finish;
+    synth.speak(utterance);
+  });
 }

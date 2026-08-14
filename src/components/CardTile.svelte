@@ -3,6 +3,8 @@
   import { speak } from '../lib/tts';
   import { playCardAudio } from '../lib/audio';
   import { sentence } from '../stores';
+  import { db } from '../lib/db';
+  import { getUserId } from '../lib/user';
 
   interface Props {
     card: Card;
@@ -56,6 +58,19 @@
         cardId: card.id
       }
     ]);
+
+    // registrar evento de uso (local; se sincroniza con pushNow)
+    try {
+      await db.recordEvent({
+        id: crypto.randomUUID(),
+        user_id: getUserId(),
+        card_id: card.id,
+        verb: 'tap',
+        at: Date.now()
+      });
+    } catch {
+      /* no crítico */
+    }
 
     // Si tiene audio grabado (R2/local), reproducirlo; si no, TTS.
     const played = card.audio_key ? await playCardAudio(card.audio_key) : false;

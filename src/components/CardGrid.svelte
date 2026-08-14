@@ -5,6 +5,7 @@
   import { seedArasaac, isSeeded, hasCatalog } from '../lib/seed';
   import { getDeviceMode, saveDeviceMode, fetchDeviceStatus } from '../lib/user';
   import { warmFingerprint } from '../lib/fingerprint';
+  import { syncNow } from '../lib/sync';
   import { activeCategoryId, categories, cards, manifest, sentence, syncSentenceWithCards, deviceMode, userName } from '../stores';
   import type { ArasaacManifest, Card } from '../lib/types';
   import CardTile from './CardTile.svelte';
@@ -87,6 +88,8 @@
       // deja de estar resaltada y se reproducirá con TTS
       syncSentenceWithCards(cs);
     }
+    // sincronizar cambios locales con el servidor (best-effort, sin bloquear)
+    void syncNow();
   }
 
   function openMenu(card: Card, x: number, y: number) {
@@ -134,6 +137,8 @@
     try {
       warmFingerprint();
       await ensureSeeded();
+      // restaurar datos del dispositivo desde la nube + subir cambios/audio pendientes
+      await syncNow();
       const cats = await db.getCategories();
       categories.set(cats);
       if (cats.length > 0) {

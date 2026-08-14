@@ -14,7 +14,7 @@
     "preview": "astro preview",
     "astro": "astro",
     "check": "astro check",
-    "check:functions": "tsc --noEmit --skipLibCheck --target ES2022 --module ESNext --moduleResolution bundler --strict functions/api/upload.ts \"functions/api/audio/[[key]].ts\" functions/api/claim.ts functions/telegram/webhook.ts functions/env.d.ts",
+    "check:functions": "tsc --noEmit --skipLibCheck --target ES2022 --module ESNext --moduleResolution bundler --strict functions/api/upload.ts \"functions/api/audio/[[key]].ts\" functions/api/claim.ts functions/api/sync.ts functions/telegram/webhook.ts functions/env.d.ts",
     "icons": "node scripts/generate-icons.mjs",
     "db:local": "wrangler d1 migrations apply lexidb --local",
     "db:remote": "wrangler d1 migrations apply lexidb --remote"

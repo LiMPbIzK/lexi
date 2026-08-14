@@ -1,6 +1,7 @@
 <script lang="ts">
   import { db } from '../lib/db';
   import { uploadAudio, deleteAudio, cacheAudioBlob } from '../lib/audio';
+  import { getUserId } from '../lib/user';
   import type { Card } from '../lib/types';
   import RecorderButton from './RecorderButton.svelte';
 
@@ -25,20 +26,41 @@
     error = null;
     try {
       let audioKey: string | null = card.audio_key;
+
       if (recording) {
         const res = await uploadAudio(recording.blob, recording.durationMs);
         if (res.ok && res.key) {
           audioKey = res.key;
           // cachear el blob localmente para que suene sin conexión desde el minuto 1
           await cacheAudioBlob(res.key, recording.blob);
-        } else {
+        } else if (res.status === 401 || res.status === 403) {
           error = res.error ?? 'No se pudo subir el audio.';
           saving = false;
           return;
+        } else {
+          // sin red o error transitorio: guardar como pendiente (audio_key local)
+          audioKey = `pending:${crypto.randomUUID()}`;
+          await db.putPendingUpload({
+            id: crypto.randomUUID(),
+            key: audioKey,
+            blob: recording.blob,
+            mime: recording.mime,
+            durationMs: recording.durationMs,
+            user_id: getUserId(),
+            created_at: Date.now()
+          });
+          // reproducible offline desde caché (blob local)
+          await cacheAudioBlob(audioKey, recording.blob);
         }
       }
 
-      const updated: Card = { ...card, audio_key: audioKey, updated_at: Date.now() };
+      const updated: Card = {
+        ...card,
+        // al personalizar, la tarjeta pasa a pertenecer al dispositivo (para sync)
+        user_id: getUserId(),
+        audio_key: audioKey,
+        updated_at: Date.now()
+      };
       await db.putCard(updated);
       onSaved?.();
       onClose();
@@ -53,7 +75,17 @@
     saving = true;
     error = null;
     try {
-      if (card.audio_key) await deleteAudio(card.audio_key);
+      if (card.audio_key) {
+        // si es un upload pendiente, borrarlo de la cola; si no, de R2
+        if (card.audio_key.startsWith('pending:')) {
+          const pendings = await db.getPendingUploads();
+          for (const p of pendings) {
+            if (p.key === card.audio_key) await db.removePendingUpload(p.id);
+          }
+        } else {
+          await deleteAudio(card.audio_key);
+        }
+      }
       const updated: Card = { ...card, audio_key: null, updated_at: Date.now() };
       await db.putCard(updated);
       onSaved?.();

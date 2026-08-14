@@ -13,6 +13,7 @@ export interface LexiSchema {
   cards: Card;
   events: RecordItem;
   meta: { key: string; value: string };
+  uploads: { id: string; key: string; blob: Blob; mime: string; durationMs: number; user_id: string; created_at: number };
 }
 
 let dbPromise: Promise<IDBPDatabase<LexiSchema>> | null = null;
@@ -46,6 +47,10 @@ export function getDB(): Promise<IDBPDatabase<LexiSchema>> {
         }
         if (!db.objectStoreNames.contains('meta')) {
           db.createObjectStore('meta', { keyPath: 'key' });
+        }
+        if (!db.objectStoreNames.contains('uploads')) {
+          const s = db.createObjectStore('uploads', { keyPath: 'id' });
+          s.createIndex('by_user', 'user_id');
         }
       }
     });
@@ -115,6 +120,32 @@ export const db = {
     return all<RecordItem>('events');
   },
 
+  async getAllEvents(): Promise<RecordItem[]> {
+    return all<RecordItem>('events');
+  },
+
+  async getAllCategories(): Promise<Category[]> {
+    return all<Category>('categories');
+  },
+
+  async getAllCards(): Promise<Card[]> {
+    return all<Card>('cards');
+  },
+
+  async restoreCategories(categories: Category[]): Promise<void> {
+    const db = await getDB();
+    const tx = db.transaction('categories', 'readwrite');
+    for (const c of categories) await tx.store.put(c);
+    await tx.done;
+  },
+
+  async restoreCards(cards: Card[]): Promise<void> {
+    const db = await getDB();
+    const tx = db.transaction('cards', 'readwrite');
+    for (const c of cards) await tx.store.put(c);
+    await tx.done;
+  },
+
   async clearEvents(): Promise<void> {
     await clear('events');
   },
@@ -135,6 +166,21 @@ export const db = {
   async removeMeta(key: string): Promise<void> {
     const db = await getDB();
     await db.delete('meta', key);
+  },
+
+  // --- uploads pendientes (audio grabado sin conexión) ---
+
+  async getPendingUploads(): Promise<LexiSchema['uploads'][]> {
+    return all<LexiSchema['uploads']>('uploads');
+  },
+
+  async putPendingUpload(u: LexiSchema['uploads']): Promise<void> {
+    await put('uploads', u);
+  },
+
+  async removePendingUpload(id: string): Promise<void> {
+    const db = await getDB();
+    await db.delete('uploads', id);
   }
 };
 

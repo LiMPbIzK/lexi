@@ -25,10 +25,11 @@ habla y para el uso por parte de terapeutas y familiares (niños y adultos).
 
 - Web PWA instalable y usable sin conexión (**offline-first**).
 - Tarjetas con imagen + sonido (grabación propia o voz sintetizada).
-- Teclado virtual para escribir frases y reproducirlas por voz (TTS).
-- Editor de tarjetas y tableros dentro de la propia app (foto/audio del micrófono).
+- **Voz personalizada por tarjeta**: graba con el micrófono y la tarjeta la reproduce en lugar del TTS (con indicador visual y disponible sin conexión).
+- Teclado virtual para escribir frases y reproducirlas por voz (TTS), con **velocidad ajustable** (1x / 1.5x / 2x) y **teclado físico** en escritorio.
+- Editor de tarjetas dentro de la propia app (audio del micrófono) mediante pulsación larga.
 - Selección de idioma y de voz TTS.
-- Cada dispositivo usa un perfil anónimo (UUID) sin registro ni login.
+- Cada dispositivo usa un perfil anónimo (UUID) sin registro ni login, activado con un **código de invitación** (alta manual; modo **demo** de solo lectura).
 - Sincronización de datos y audio entre dispositivos vía la nube cuando hay red.
 
 ## Estado actual
@@ -63,23 +64,50 @@ Requisitos: Node.js 22+, wrangler.
 git clone https://github.com/LiMPbIzK/lexi.git
 cd lexi
 npm install
-npx wrangler d1 migrations apply lexidb --local   # prepara D1 local
-npm run dev                                        # Astro dev
-npx wrangler pages dev dist                        # simula D1/R2/KV en local
+npm run db:local                                 # prepara D1 local (migraciones)
+npm run dev                                      # build + wrangler pages dev (http://localhost:8788)
 ```
 
-Se genera un perfil anónimo en cada dispositivo (UUID). No necesita registro.
+Para probar en local necesitas un **código de invitación local** (la BD local es distinta de la remota):
 
-## Puesta en producción (resumen)
+```bash
+node scripts/generate-codes.mjs 1 "Mi PC" --local
+```
 
-1. Conectar el repo GitHub `LiMPbIzK/lexi` a Cloudflare Pages (build: `npm run build`, salida: `dist`, Node 22).
-2. Crear la base de datos D1 y aplicar las migraciones (`wrangler d1 migrations apply --remote`).
-3. Crear el bucket R2 y configurar los secrets `R2_ACCESS_KEY_ID` / `R2_SECRET_ACCESS_KEY`.
-4. Añadir el dominio `lexi.fmartinezgarcia.com` y verificar el certificado SSL.
+El dispositivo usa un perfil anónimo (UUID) y se activa introduciendo el código. No necesita registro.
+
+## Bot de Telegram (gestión de códigos)
+
+Para generar/revocar/listar códigos de invitación desde el móvil, existe un bot privado (solo responde a tu chat):
+
+1. Crea el bot en [@BotFather](https://t.me/BotFather) y obtén el token.
+2. Configura los secrets en Cloudflare Pages:
+   ```bash
+   npx wrangler pages secret put TELEGRAM_BOT_TOKEN
+   npx wrangler pages secret put OWNER_CHAT_ID
+   ```
+3. Registra el webhook (una vez):
+   ```bash
+   curl "https://api.telegram.org/bot<TOKEN>/setWebhook?url=https://lexi-426.pages.dev/telegram/webhook"
+   ```
+
+Comandos: `/nuevo [n] [etiqueta]`, `/libres`, `/lista`, `/revocar LEXI-XXXX-XXXX`.
+
+## Puesta en producción
+
+1. Conectar el repo GitHub `LiMPbIzK/lexi` a Cloudflare Pages (build: `npm run build`, salida: `dist`, Node 22) → cada `git push` a `main` despliega automáticamente.
+2. Crear la base de datos D1 y aplicar las migraciones en remoto: `npm run db:remote`.
+3. Crear el bucket R2 (`lexi-audio`); los bindings D1/R2 se leen del `wrangler.json` del repo.
+4. Configurar los secrets del bot de Telegram (`TELEGRAM_BOT_TOKEN`, `OWNER_CHAT_ID`).
+5. Generar códigos de invitación para las familias: `node scripts/generate-codes.mjs 5 "Familia García" --remote`.
+6. Añadir el dominio `lexi.fmartinezgarcia.com` y verificar el certificado SSL.
 
 ## Esquema de datos (D1)
 
 - `users` — perfil anónimo por dispositivo (UUID, locale, voz TTS).
+- `devices` — dispositivos registrados (id, código canjeado, modo `full`/`demo`, token de recuperación).
+- `invite_codes` — códigos de invitación emitidos manualmente (libre/usado/revocado).
+- `device_usage` — acumulados por dispositivo para cuotas de almacenamiento/subidas.
 - `categories` — categorías/tableros (id, nombre, color, orden, *tombstone*).
 - `cards` — tarjetas (etiqueta, imagen/audio en R2, texto TTS, orden, *tombstone*).
 - `recordings` — grabaciones de audio (clave R2, mime webm/aac, duración).
@@ -94,9 +122,9 @@ previsto hacia `card_translations(card_id, locale, label)` cuando llegue el ingl
 - [x] Esqueleto Astro + Svelte y primer deploy en Cloudflare Pages
 - [x] D1 + R2 vinculados (funciones/API)
 - [x] Seed ARASAAC (catálogo base precargado)
-- [ ] Grid de tarjetas con sonido (audio propio o TTS)
-- [ ] Teclado virtual en español + TTS
-- [ ] Editor de tarjetas/tableros
+- [x] Grid de tarjetas con sonido (audio propio o TTS)
+- [x] Teclado virtual en español + TTS
+- [x] Editor de tarjetas/tableros
 - [ ] Sincronización offline-first y estadísticas
 - [ ] PWA instalable final + verificación del dominio
 - [ ] Soporte inicial para inglés

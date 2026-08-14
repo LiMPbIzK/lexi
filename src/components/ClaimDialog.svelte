@@ -2,6 +2,7 @@
   import { onMount } from 'svelte';
   import { getInviteCode, getDeviceMode, clearDeviceRegistration, restoreProfileFromBackup } from '../lib/user';
   import { claimInviteCode, normalizeDigits, displayValue, buildFullCode, isCodeComplete } from '../lib/claim';
+  import { deviceMode } from '../stores';
 
   let registered = $state(false);
   let demo = $state(false);
@@ -18,6 +19,7 @@
 
     registered = getInviteCode() !== null;
     demo = getDeviceMode() === 'demo';
+    deviceMode.set(getDeviceMode());
 
     // Auto-canjeo desde ?code=
     const urlCode = new URLSearchParams(window.location.search).get('code');
@@ -40,6 +42,7 @@
     reRegistering = true;
     digits = '';
     error = null;
+    deviceMode.set(null);
     // focus del input tras renderizar el diálogo
     setTimeout(() => inputEl?.focus(), 50);
   }
@@ -90,6 +93,7 @@
     if (res.ok) {
       registered = true;
       demo = res.mode === 'demo';
+      deviceMode.set(res.mode ?? 'full');
       const url = new URL(window.location.href);
       url.searchParams.delete('code');
       window.history.replaceState({}, '', url);

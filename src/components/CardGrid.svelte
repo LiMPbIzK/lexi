@@ -3,8 +3,8 @@
   import { useStore } from '@nanostores/svelte-runes';
   import { db } from '../lib/db';
   import { seedArasaac, isSeeded, hasCatalog } from '../lib/seed';
-  import { getDeviceMode, fetchDeviceStatus } from '../lib/user';
-  import { activeCategoryId, categories, cards, manifest, sentence } from '../stores';
+  import { getDeviceMode, saveDeviceMode, fetchDeviceStatus } from '../lib/user';
+  import { activeCategoryId, categories, cards, manifest, sentence, syncSentenceWithCards, deviceMode } from '../stores';
   import type { ArasaacManifest, Card } from '../lib/types';
   import CardTile from './CardTile.svelte';
   import CardEditor from './CardEditor.svelte';
@@ -13,6 +13,7 @@
   const cardList = useStore(cards);
   const activeId = useStore(activeCategoryId);
   const sentenceWords = useStore(sentence);
+  const mode = useStore(deviceMode);
 
   let loading = $state(true);
   let error = $state<string | null>(null);
@@ -21,22 +22,67 @@
   let menuPos = $state<{ x: number; y: number } | null>(null);
   let editingCard: Card | null = $state(null);
 
-  /** Confirma contra el servidor si este dispositivo puede grabar (full + registrado). */
+  /** Decide si este dispositivo puede editar (grabar voz).
+   *  Reacciona al store deviceMode (que ClaimDialog actualiza al canjear).
+   */
   async function refreshCanEdit() {
-    // el modo local es una pista rápida; el servidor es la fuente de verdad
     const localMode = getDeviceMode();
+
     if (localMode === 'demo') {
       canEdit = false;
       return;
     }
-    const status = await fetchDeviceStatus();
-    canEdit = status.registered && status.mode === 'full';
+
+    if (localMode === 'full') {
+      // modo full local: permitir editar siempre (offline-first)
+      canEdit = true;
+      // si hay red, aprovechar para sincronizar la pista local (no bloquea)
+      try {
+        const status = await fetchDeviceStatus();
+        if (status.registered && status.mode === 'full' && getDeviceMode() !== 'full') {
+          saveDeviceMode('full');
+        } else if (status.mode === 'demo') {
+          saveDeviceMode('demo');
+        }
+      } catch {
+        /* sin red: mantener estado local */
+      }
+      return;
+    }
+
+    // null: no hay pista local -> preguntar al servidor
+    try {
+      const status = await fetchDeviceStatus();
+      if (status.registered && status.mode === 'full') {
+        saveDeviceMode('full');
+        deviceMode.set('full');
+        canEdit = true;
+      } else {
+        canEdit = false;
+      }
+    } catch {
+      canEdit = false;
+    }
   }
+
+  // Reacciona a cambios en el store de modo (p. ej. tras canjear un código)
+  $effect(() => {
+    const m = mode.current;
+    if (m) {
+      canEdit = m === 'full';
+    } else {
+      void refreshCanEdit();
+    }
+  });
 
   async function reloadCards() {
     const id = activeCategoryId.get();
     if (id) {
-      cards.set(await db.getCardsByCategory(id));
+      const cs = await db.getCardsByCategory(id);
+      cards.set(cs);
+      // re-sincronizar la frase: si una tarjeta perdió su audio, la palabra
+      // deja de estar resaltada y se reproducirá con TTS
+      syncSentenceWithCards(cs);
     }
   }
 
@@ -84,7 +130,6 @@
   onMount(async () => {
     try {
       await ensureSeeded();
-      await refreshCanEdit();
       const cats = await db.getCategories();
       categories.set(cats);
       if (cats.length > 0) {
@@ -103,7 +148,10 @@
   $effect(() => {
     const id = activeId.current;
     if (id) {
-      db.getCardsByCategory(id).then((cs) => cards.set(cs));
+      db.getCardsByCategory(id).then((cs) => {
+        cards.set(cs);
+        syncSentenceWithCards(cs);
+      });
     }
   });
 </script>
@@ -154,7 +202,7 @@
     <div class="ctx-title">{menuCard.label}</div>
     <button type="button" class="ctx-option" role="menuitem" onclick={openAudioEditor}>
       <span class="ctx-icon" aria-hidden="true">🎤</span>
-      Añadir audio personalizado
+      {menuCard.audio_key ? 'Editar audio personalizado' : 'Añadir audio personalizado'}
     </button>
     <button type="button" class="ctx-option" role="menuitem" onclick={closeMenu}>
       Cancelar

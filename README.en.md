@@ -24,10 +24,11 @@ families (children and adults).
 
 - Installable, **offline-first** PWA.
 - Cards with image + sound (own recording or TTS).
-- On-screen keyboard to type sentences and have them spoken (TTS).
-- In-app card & board editor (camera/photo + microphone audio).
+- **Per-card custom voice**: record with the microphone and the card plays it instead of TTS (with a visual indicator, available offline).
+- On-screen keyboard to type sentences and have them spoken (TTS), with **adjustable speed** (1x / 1.5x / 2x) and **physical keyboard** support on desktop.
+- In-app card editor (microphone audio) via long-press.
 - Language and TTS voice selection.
-- Each device uses an anonymous profile (UUID), no sign-up/login.
+- Each device uses an anonymous profile (UUID), activated with an **invite code** (manual issuance; **demo** read-only mode).
 - Data and audio sync to the cloud whenever a connection is available.
 
 ## Current status
@@ -61,23 +62,50 @@ Requirements: Node.js 22+, wrangler.
 git clone https://github.com/LiMPbIzK/lexi.git
 cd lexi
 npm install
-npx wrangler d1 migrations apply lexidb --local   # prepare local D1
-npm run dev                                        # Astro dev
-npx wrangler pages dev dist                        # emulate D1/R2/KV locally
+npm run db:local                                 # prepare local D1 (migrations)
+npm run dev                                      # build + wrangler pages dev (http://localhost:8788)
 ```
 
-An anonymous profile (UUID) is created per device. No registration needed.
+For local testing you need a **local invite code** (the local DB is separate from the remote one):
 
-## Production setup (summary)
+```bash
+node scripts/generate-codes.mjs 1 "My PC" --local
+```
 
-1. Connect the GitHub repo `LiMPbIzK/lexi` to Cloudflare Pages (build: `npm run build`, output: `dist`, Node 22).
-2. Create the D1 database and apply migrations (`wrangler d1 migrations apply --remote`).
-3. Create the R2 bucket and set secrets `R2_ACCESS_KEY_ID` / `R2_SECRET_ACCESS_KEY`.
-4. Add the `lexi.fmartinezgarcia.com` domain and verify the SSL certificate.
+Each device uses an anonymous profile (UUID) and is activated by entering the code. No registration needed.
+
+## Telegram bot (invite-code management)
+
+To generate/revoke/list invite codes from your phone, there is a private bot (only replies to your chat):
+
+1. Create the bot via [@BotFather](https://t.me/BotFather) and get the token.
+2. Configure the secrets in Cloudflare Pages:
+   ```bash
+   npx wrangler pages secret put TELEGRAM_BOT_TOKEN
+   npx wrangler pages secret put OWNER_CHAT_ID
+   ```
+3. Register the webhook (once):
+   ```bash
+   curl "https://api.telegram.org/bot<TOKEN>/setWebhook?url=https://lexi-426.pages.dev/telegram/webhook"
+   ```
+
+Commands: `/nuevo [n] [label]`, `/libres`, `/lista`, `/revocar LEXI-XXXX-XXXX`.
+
+## Production setup
+
+1. Connect the GitHub repo `LiMPbIzK/lexi` to Cloudflare Pages (build: `npm run build`, output: `dist`, Node 22) → every `git push` to `main` deploys automatically.
+2. Create the D1 database and apply migrations remotely: `npm run db:remote`.
+3. Create the R2 bucket (`lexi-audio`); D1/R2 bindings are read from the repo's `wrangler.json`.
+4. Configure the Telegram bot secrets (`TELEGRAM_BOT_TOKEN`, `OWNER_CHAT_ID`).
+5. Generate invite codes for families: `node scripts/generate-codes.mjs 5 "García family" --remote`.
+6. Add the `lexi.fmartinezgarcia.com` domain and verify the SSL certificate.
 
 ## Data model (D1)
 
 - `users` — anonymous per-device profile (UUID, locale, TTS voice).
+- `devices` — registered devices (id, claimed code, mode `full`/`demo`, recovery token).
+- `invite_codes` — manually issued invite codes (free/used/revoked).
+- `device_usage` — per-device totals for storage/upload quotas.
 - `categories` — categories/boards (id, name, color, sort order, tombstone).
 - `cards` — cards (label, image/audio in R2, TTS text, sort order, tombstone).
 - `recordings` — audio recordings (R2 key, webm/aac mime, duration).
@@ -92,9 +120,9 @@ Built for future i18n: `label` is monolingual for now, with a planned path towar
 - [x] Astro + Svelte skeleton and first Cloudflare Pages deploy
 - [x] D1 + R2 bindings (Functions/API)
 - [x] ARASAAC core seed (preloaded base catalog)
-- [ ] Card grid with sound (own audio or TTS)
-- [ ] Spanish on-screen keyboard + TTS
-- [ ] Card/board editor
+- [x] Card grid with sound (own audio or TTS)
+- [x] Spanish on-screen keyboard + TTS
+- [x] Card/board editor
 - [ ] Offline-first sync and usage stats
 - [ ] Final installable PWA + domain verification
 - [ ] Initial English support

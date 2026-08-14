@@ -27,10 +27,10 @@
       let audioKey: string | null = card.audio_key;
       if (recording) {
         const res = await uploadAudio(recording.blob, recording.durationMs);
-        if (res) {
+        if (res.ok && res.key) {
           audioKey = res.key;
         } else {
-          error = 'No se pudo subir el audio.';
+          error = res.error ?? 'No se pudo subir el audio.';
           saving = false;
           return;
         }

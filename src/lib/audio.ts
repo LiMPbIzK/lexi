@@ -51,15 +51,20 @@ export async function playCardAudio(audioKey: string): Promise<boolean> {
 }
 
 /**
- * Sube un blob de audio a R2. Devuelve { key, mime, size } o null si falla.
+ * Sube un blob de audio a R2. Devuelve { ok, key?, error? }.
  * durationMs: duración de la grabación (validada por el servidor).
- * (Se usará en el editor de tarjetas.)
  */
-export async function uploadAudio(
-  blob: Blob,
-  durationMs?: number
-): Promise<{ key: string; mime: string; size: number } | null> {
-  if (!isBrowser()) return null;
+export interface UploadResult {
+  ok: boolean;
+  key?: string;
+  mime?: string;
+  size?: number;
+  error?: string;
+  status?: number;
+}
+
+export async function uploadAudio(blob: Blob, durationMs?: number): Promise<UploadResult> {
+  if (!isBrowser()) return { ok: false, error: 'No disponible en este contexto.' };
 
   try {
     const res = await fetch('/api/upload', {
@@ -71,10 +76,22 @@ export async function uploadAudio(
       },
       body: blob
     });
-    if (!res.ok) return null;
-    return await res.json();
+
+    if (!res.ok) {
+      let error = 'Error al subir el audio.';
+      try {
+        const data = await res.json();
+        if (data?.error) error = data.error;
+      } catch {
+        /* sin cuerpo JSON */
+      }
+      return { ok: false, status: res.status, error };
+    }
+
+    const data = (await res.json()) as { key: string; mime: string; size: number };
+    return { ok: true, key: data.key, mime: data.mime, size: data.size };
   } catch {
-    return null;
+    return { ok: false, error: 'Sin conexión al subir el audio.' };
   }
 }
 

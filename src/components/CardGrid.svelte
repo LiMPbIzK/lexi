@@ -3,9 +3,11 @@
   import { useStore } from '@nanostores/svelte-runes';
   import { db } from '../lib/db';
   import { seedArasaac, isSeeded, hasCatalog } from '../lib/seed';
+  import { getDeviceMode } from '../lib/user';
   import { activeCategoryId, categories, cards, manifest, sentence } from '../stores';
-  import type { ArasaacManifest } from '../lib/types';
+  import type { ArasaacManifest, Card } from '../lib/types';
   import CardTile from './CardTile.svelte';
+  import CardEditor from './CardEditor.svelte';
 
   const cat = useStore(categories);
   const cardList = useStore(cards);
@@ -14,6 +16,43 @@
 
   let loading = $state(true);
   let error = $state<string | null>(null);
+  let isDemo = $state(false);
+  let menuCard: Card | null = $state(null);
+  let menuPos = $state<{ x: number; y: number } | null>(null);
+  let editingCard: Card | null = $state(null);
+
+  $effect(() => {
+    isDemo = getDeviceMode() === 'demo';
+  });
+
+  async function reloadCards() {
+    const id = activeCategoryId.get();
+    if (id) {
+      cards.set(await db.getCardsByCategory(id));
+    }
+  }
+
+  function openMenu(card: Card, x: number, y: number) {
+    if (isDemo) return;
+    menuCard = card;
+    menuPos = { x, y };
+  }
+
+  function closeMenu() {
+    menuCard = null;
+    menuPos = null;
+  }
+
+  function openAudioEditor() {
+    if (!menuCard) return;
+    editingCard = menuCard;
+    closeMenu();
+  }
+
+  function closeEditor() {
+    editingCard = null;
+    void reloadCards();
+  }
 
   async function ensureSeeded() {
     // si el flag está marcado pero IndexedDB quedó vacía (error previo),
@@ -84,11 +123,39 @@
   {:else}
     <div class="card-grid">
       {#each cardList.current as card (card.id)}
-        <CardTile {card} />
+        <CardTile {card} onlongpress={openMenu} />
       {/each}
     </div>
   {/if}
 </div>
+
+{#if menuCard && menuPos}
+  <div
+    class="ctx-backdrop"
+    onclick={closeMenu}
+    oncontextmenu={(e) => e.preventDefault()}
+    aria-hidden="true"
+  ></div>
+  <div
+    class="ctx-menu"
+    role="menu"
+    aria-label="Opciones de la tarjeta"
+    style="left: {menuPos.x}px; top: {menuPos.y}px"
+  >
+    <div class="ctx-title">{menuCard.label}</div>
+    <button type="button" class="ctx-option" role="menuitem" onclick={openAudioEditor}>
+      <span class="ctx-icon" aria-hidden="true">🎤</span>
+      Añadir audio personalizado
+    </button>
+    <button type="button" class="ctx-option" role="menuitem" onclick={closeMenu}>
+      Cancelar
+    </button>
+  </div>
+{/if}
+
+{#if editingCard}
+  <CardEditor card={editingCard} onClose={closeEditor} />
+{/if}
 
 <style>
   .grid-view {
@@ -136,6 +203,62 @@
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(6.5rem, 1fr));
     gap: var(--tile-gap);
+  }
+
+  .ctx-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 40;
+  }
+
+  .ctx-menu {
+    position: fixed;
+    z-index: 41;
+    min-width: 12rem;
+    max-width: 16rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 0.4rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    transform: translate(min(8px, 100%), 8px);
+  }
+
+  .ctx-title {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    padding: 0.4rem 0.6rem 0.3rem;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 0.2rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .ctx-option {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    text-align: left;
+    width: 100%;
+    border: none;
+    background: transparent;
+    border-radius: calc(var(--radius) / 2);
+    padding: 0.6rem 0.75rem;
+    font-size: 0.95rem;
+    font-weight: 600;
+  }
+
+  .ctx-option:hover {
+    background: var(--surface-alt);
+  }
+
+  .ctx-icon {
+    font-size: 1.1rem;
   }
 
   .hint {

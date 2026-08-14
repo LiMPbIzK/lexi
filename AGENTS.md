@@ -11,6 +11,9 @@
 ## Convenciones críticas (NO romper)
 - **Nunca ejecutar `git commit` ni `git push`.** El usuario los ejecuta siempre.
   Solo sugerir `git add` + mensaje convencional cuando un hito esté completo.
+- **Mensajes de commit SIEMPRE en inglés** (Conventional Commits), coherentes
+  en todo el historial: `feat:`, `fix:`, `chore:`, `docs:` seguidos de inglés.
+  No mezclar con español.
 - **Backups:** en cada hito, zip en `J:\Codigo\backups\lexi\lexi-YYYYMMDD-HHMMSS-HitoN.zip`.
 - **Idioma de READMEs:** `README.md` = español, `README.en.md` = inglés.
   Mantener la cabecera de alternancia `[English](README.en.md) | [Español](README.md)`

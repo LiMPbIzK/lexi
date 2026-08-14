@@ -89,9 +89,10 @@ export async function onRequestPost(context: {
     );
   }
 
-  // Duración máxima por grabación
+  // Duración máxima por grabación (fallback robusto si la var no llega tipada)
   const durationMs = Number(request.headers.get('x-duration-ms') || 0);
-  if (durationMs > env.MAX_RECORDING_MS) {
+  const maxRecordingMs = Number(env.MAX_RECORDING_MS) > 0 ? Number(env.MAX_RECORDING_MS) : 30000;
+  if (durationMs > maxRecordingMs) {
     return Response.json(
       { error: 'La grabación supera la duración máxima permitida.' },
       { status: 413 }

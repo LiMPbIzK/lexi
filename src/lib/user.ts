@@ -164,6 +164,27 @@ export async function restoreProfileFromBackup(): Promise<boolean> {
   return restored;
 }
 
+export interface DeviceStatus {
+  registered: boolean;
+  mode: 'full' | 'demo' | null;
+}
+
+/**
+ * Consulta el estado REAL del dispositivo al servidor (fuente de verdad).
+ * No se fía solo de localStorage (que Android puede limpiar).
+ */
+export async function fetchDeviceStatus(): Promise<DeviceStatus> {
+  try {
+    const res = await fetch('/api/device/status', {
+      headers: { 'X-Device-Id': getUserId() }
+    });
+    if (!res.ok) return { registered: false, mode: null };
+    return (await res.json()) as DeviceStatus;
+  } catch {
+    return { registered: false, mode: null };
+  }
+}
+
 export function createUser(overrides: Partial<User> = {}): User {
   return {
     id: getUserId(),

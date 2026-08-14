@@ -3,7 +3,7 @@
   import { useStore } from '@nanostores/svelte-runes';
   import { db } from '../lib/db';
   import { seedArasaac, isSeeded, hasCatalog } from '../lib/seed';
-  import { getDeviceMode } from '../lib/user';
+  import { getDeviceMode, fetchDeviceStatus } from '../lib/user';
   import { activeCategoryId, categories, cards, manifest, sentence } from '../stores';
   import type { ArasaacManifest, Card } from '../lib/types';
   import CardTile from './CardTile.svelte';
@@ -16,14 +16,22 @@
 
   let loading = $state(true);
   let error = $state<string | null>(null);
-  let isDemo = $state(false);
+  let canEdit = $state(false);
   let menuCard: Card | null = $state(null);
   let menuPos = $state<{ x: number; y: number } | null>(null);
   let editingCard: Card | null = $state(null);
 
-  $effect(() => {
-    isDemo = getDeviceMode() === 'demo';
-  });
+  /** Confirma contra el servidor si este dispositivo puede grabar (full + registrado). */
+  async function refreshCanEdit() {
+    // el modo local es una pista rápida; el servidor es la fuente de verdad
+    const localMode = getDeviceMode();
+    if (localMode === 'demo') {
+      canEdit = false;
+      return;
+    }
+    const status = await fetchDeviceStatus();
+    canEdit = status.registered && status.mode === 'full';
+  }
 
   async function reloadCards() {
     const id = activeCategoryId.get();
@@ -33,7 +41,7 @@
   }
 
   function openMenu(card: Card, x: number, y: number) {
-    if (isDemo) return;
+    if (!canEdit) return;
     menuCard = card;
     menuPos = { x, y };
   }
@@ -76,6 +84,7 @@
   onMount(async () => {
     try {
       await ensureSeeded();
+      await refreshCanEdit();
       const cats = await db.getCategories();
       categories.set(cats);
       if (cats.length > 0) {
@@ -123,7 +132,7 @@
   {:else}
     <div class="card-grid">
       {#each cardList.current as card (card.id)}
-        <CardTile {card} onlongpress={openMenu} />
+        <CardTile {card} editable={canEdit} onlongpress={openMenu} />
       {/each}
     </div>
   {/if}

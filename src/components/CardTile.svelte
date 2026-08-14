@@ -6,16 +6,18 @@
 
   interface Props {
     card: Card;
+    editable?: boolean;
     onlongpress?: (card: Card, x: number, y: number) => void;
   }
 
-  let { card, onlongpress }: Props = $props();
+  let { card, editable = true, onlongpress }: Props = $props();
 
   const LONG_PRESS_MS = 500;
   let longPressTimer: ReturnType<typeof setTimeout> | null = null;
   let longPressed = $state(false);
 
   function startLongPress(event: PointerEvent) {
+    if (!editable) return;
     if (event.pointerType === 'mouse' && event.button !== 0) return;
     longPressed = false;
     longPressTimer = setTimeout(() => {
@@ -33,6 +35,7 @@
 
   function handleContextMenu(event: MouseEvent) {
     // también abre el menú con clic derecho (útil en escritorio)
+    if (!editable) return;
     event.preventDefault();
     onlongpress?.(card, event.clientX, event.clientY);
   }

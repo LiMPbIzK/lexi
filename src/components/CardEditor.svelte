@@ -1,6 +1,6 @@
 <script lang="ts">
   import { db } from '../lib/db';
-  import { uploadAudio, deleteAudio } from '../lib/audio';
+  import { uploadAudio, deleteAudio, cacheAudioBlob } from '../lib/audio';
   import type { Card } from '../lib/types';
   import RecorderButton from './RecorderButton.svelte';
 
@@ -29,6 +29,8 @@
         const res = await uploadAudio(recording.blob, recording.durationMs);
         if (res.ok && res.key) {
           audioKey = res.key;
+          // cachear el blob localmente para que suene sin conexión desde el minuto 1
+          await cacheAudioBlob(res.key, recording.blob);
         } else {
           error = res.error ?? 'No se pudo subir el audio.';
           saving = false;
@@ -92,14 +94,25 @@
         </button>
       {/if}
 
-      <button
-        type="button"
-        class="btn-save"
-        onclick={save}
-        disabled={saving || (!recording && card.audio_key !== null)}
-      >
-        {saving ? 'Guardando…' : 'Guardar audio'}
-      </button>
+      {#if recording}
+        <button
+          type="button"
+          class="btn-save"
+          onclick={save}
+          disabled={saving}
+        >
+          {saving ? 'Guardando…' : 'Guardar audio'}
+        </button>
+      {:else}
+        <button
+          type="button"
+          class="btn-close"
+          onclick={onClose}
+          disabled={saving}
+        >
+          Cerrar
+        </button>
+      {/if}
     </div>
   </div>
 </div>
@@ -167,6 +180,14 @@
     font-weight: 700;
   }
 
+  .btn-close {
+    padding: 0.6rem 1.1rem;
+    background: var(--surface-alt);
+    border-color: var(--border);
+    color: var(--text);
+    font-weight: 600;
+  }
+
   .btn-danger {
     padding: 0.6rem 1.1rem;
     background: var(--error);
@@ -176,7 +197,9 @@
   }
 
   .btn-save:disabled,
-  .btn-danger:disabled {
+  .btn-danger:disabled,
+  .btn-close:disabled,
+  .btn-cancel:disabled {
     opacity: 0.5;
   }
 </style>

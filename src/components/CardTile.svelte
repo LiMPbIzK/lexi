@@ -45,8 +45,17 @@
       longPressed = false;
       return;
     }
-    // encolar la palabra en la frase
-    sentence.set([...sentence.get(), { text: card.label, source: 'card' }]);
+    // encolar la palabra en la frase (marcando si es voz personalizada)
+    sentence.set([
+      ...sentence.get(),
+      {
+        text: card.label,
+        source: 'card',
+        customVoice: !!card.audio_key,
+        audioKey: card.audio_key,
+        cardId: card.id
+      }
+    ]);
 
     // Si tiene audio grabado (R2/local), reproducirlo; si no, TTS.
     const played = card.audio_key ? await playCardAudio(card.audio_key) : false;

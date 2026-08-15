@@ -20,6 +20,15 @@ interface TelegramUpdate {
  * Recibe updates de Telegram (mensajes y callbacks de botones).
  * Solo responde al chat del propietario (OWNER_CHAT_ID).
  */
+/**
+ * Formatea una fecha epoch (ms) en el huso horario del propietario.
+ * En Workers no se hereda el TZ local: se fuerza el timeZone configurable
+ * (TIME_ZONE, default Europe/Madrid) para que las horas sean las locales.
+ */
+function formatTime(ts: number, timeZone: string): string {
+  return new Date(ts).toLocaleString('es-ES', { timeZone });
+}
+
 export async function onRequestPost(context: {
   request: Request;
   env: Env;
@@ -36,6 +45,7 @@ export async function onRequestPost(context: {
   const token = (env.TELEGRAM_BOT_TOKEN ?? '').trim();
   const rawOwner = String(env.OWNER_CHAT_ID ?? '').trim();
   const ownerChatId = parseInt(rawOwner, 10);
+  const timeZone = (env.TIME_ZONE ?? 'Europe/Madrid').trim();
   if (!token || !Number.isFinite(ownerChatId)) {
     return new Response('Bot no configurado', { status: 500 });
   }
@@ -168,7 +178,7 @@ export async function onRequestPost(context: {
         }
 
         const lines = rows.results.map((r) => {
-          const alta = new Date(r.created_at).toLocaleString('es-ES');
+          const alta = formatTime(r.created_at, timeZone);
           let state = '🟢 Libre';
           if (r.revoked_at) state = '🔴 Revocado';
           else if (r.claimed_by) state = '🔵 Usado';
@@ -177,7 +187,7 @@ export async function onRequestPost(context: {
             `   Alta: ${alta} · ${state}`
           ];
           if (r.claimed_by) {
-            detail.push(`   UUID: <code>${r.claimed_by.slice(0, 8)}…</code> · Uso: ${new Date(r.claimed_at!).toLocaleString('es-ES')}`);
+            detail.push(`   UUID: <code>${r.claimed_by.slice(0, 8)}…</code> · Uso: ${formatTime(r.claimed_at!, timeZone)}`);
           }
           return detail.join('\n');
         });

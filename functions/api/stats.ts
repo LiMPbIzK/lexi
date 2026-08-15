@@ -28,19 +28,29 @@ export async function onRequestGet(context: {
   const url = new URL(request.url);
   const days = Math.min(Math.max(parseInt(url.searchParams.get('days') || '14', 10), 1), 90);
   const cutoff = Date.now() - days * 24 * 60 * 60 * 1000;
+  const timeZone = (env.TIME_ZONE ?? 'Europe/Madrid').trim();
 
   // --- Actividad diaria (últimos N días) ---
-  // Usamos strftime para agrupar por fecha UTC
-  const dailyRes = await env.DB.prepare(
-    `SELECT strftime('%Y-%m-%d', datetime(at/1000, 'unixepoch')) AS day,
-            COUNT(*) AS count
-     FROM events
-     WHERE user_id = ? AND at >= ?
-     GROUP BY day
-     ORDER BY day`
-  ).bind(deviceId, cutoff).all();
+  // Agrupamos en JS con el timezone del propietario (correcto con horario de
+  // verano/invierno); strftime solo agrupa en UTC y desplazaría el "día".
+  const dailyEvents = await env.DB.prepare(
+    'SELECT at FROM events WHERE user_id = ? AND at >= ? ORDER BY at ASC LIMIT 20000'
+  ).bind(deviceId, cutoff).all<{ at: number }>();
 
-  const daily: { day: string; count: number }[] = (dailyRes.results as { day: string; count: number }[]) ?? [];
+  const dayFmt = new Intl.DateTimeFormat('en-CA', {
+    timeZone,
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit'
+  });
+  const dailyMap = new Map<string, number>();
+  for (const row of dailyEvents.results ?? []) {
+    const day = dayFmt.format(new Date(row.at));
+    dailyMap.set(day, (dailyMap.get(day) ?? 0) + 1);
+  }
+  const daily: { day: string; count: number }[] = Array.from(dailyMap.entries())
+    .map(([day, count]) => ({ day, count }))
+    .sort((a, b) => a.day.localeCompare(b.day));
 
   // --- Totales por verbo ---
   const verbRes = await env.DB.prepare(

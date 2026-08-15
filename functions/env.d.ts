@@ -12,4 +12,5 @@ export interface Env {
   MAX_RECORDING_MS: number;
   TELEGRAM_BOT_TOKEN?: string;
   OWNER_CHAT_ID?: number;
+  TIME_ZONE?: string;
 }

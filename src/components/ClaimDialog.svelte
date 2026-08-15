@@ -90,6 +90,24 @@
     error = null;
     const code = buildFullCode(digits);
     const res = await claimInviteCode(code);
+    applyResult(res);
+  }
+
+  /** Canjea el código demo público (LEXI-DEMO-CODE): probar sin registro. */
+  async function submitDemo() {
+    if (busy) return;
+    busy = true;
+    error = null;
+    const res = await claimInviteCode('LEXI-DEMO-CODE');
+    applyResult(res);
+  }
+
+  function applyResult(res: {
+    ok: boolean;
+    mode?: 'full' | 'demo';
+    user?: string;
+    error?: string;
+  }) {
     busy = false;
     if (res.ok) {
       registered = true;
@@ -151,6 +169,19 @@
         {busy ? 'Registrando…' : 'Activar dispositivo'}
       </button>
       <p class="claim-note">El código solo se puede usar en un dispositivo.</p>
+
+      <div class="claim-divider" aria-hidden="true"></div>
+
+      <button
+        type="button"
+        class="claim-demo"
+        onclick={submitDemo}
+        disabled={busy}
+      >
+        <span class="demo-icon" aria-hidden="true">🎧</span>
+        Probar la aplicación (demo)
+      </button>
+      <p class="claim-note">Sin registro: explora el tablero y el teclado. Sin grabación de voz.</p>
     </div>
   </div>
 {/if}
@@ -261,6 +292,49 @@
   .claim-note {
     color: var(--text-muted);
     font-size: 0.78rem;
+  }
+
+  .claim-divider {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin: 0.25rem 0;
+    color: var(--text-muted);
+    font-size: 0.75rem;
+  }
+
+  .claim-divider::before,
+  .claim-divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  .claim-demo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1rem;
+    border-radius: calc(var(--radius) / 2);
+    border: 1px solid var(--border);
+    background: var(--surface-alt);
+    color: var(--text);
+    font-weight: 700;
+  }
+
+  .claim-demo:hover:not(:disabled) {
+    background: var(--primary-soft);
+    border-color: var(--primary);
+  }
+
+  .claim-demo:disabled {
+    opacity: 0.5;
+  }
+
+  .demo-icon {
+    font-size: 1.1rem;
   }
 
   .demo-bar {

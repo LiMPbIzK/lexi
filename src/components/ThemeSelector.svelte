@@ -37,6 +37,7 @@
     onclick={toggle}
     aria-label="Cambiar tema"
     aria-expanded={open}
+    title="Cambiar tema de colores"
   >
     <svg
       class="palette-icon"

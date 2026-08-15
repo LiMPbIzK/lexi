@@ -27,6 +27,7 @@
     onclick={() => (open = !open)}
     aria-label="Velocidad de reproducción"
     aria-expanded={open}
+    title="Velocidad de reproducción"
   >
     <svg
       class="speed-icon"

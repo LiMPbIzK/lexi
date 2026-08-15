@@ -68,10 +68,22 @@
   aria-label="Estadísticas de uso"
   title="Estadísticas de uso"
 >
-  <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true">
-    <rect x="3" y="12" width="4" height="9" rx="1" />
-    <rect x="10" y="6" width="4" height="15" rx="1" />
-    <rect x="17" y="3" width="4" height="18" rx="1" />
+  <svg
+    class="stats-icon"
+    viewBox="0 0 24 24"
+    width="22"
+    height="22"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    aria-hidden="true"
+  >
+    <line x1="3" y1="20" x2="21" y2="20" />
+    <line x1="7" y1="20" x2="7" y2="11" />
+    <line x1="12" y1="20" x2="12" y2="5" />
+    <line x1="17" y1="20" x2="17" y2="13" />
   </svg>
 </button>
 
@@ -80,7 +92,22 @@
   <div class="modal" role="dialog" aria-modal="true" aria-label="Estadísticas de uso">
     <div class="modal-header">
       <h2>Estadísticas de uso</h2>
-      <button type="button" class="close-btn" onclick={() => (open = false)} aria-label="Cerrar">✕</button>
+      <button type="button" class="close-btn" onclick={() => (open = false)} aria-label="Cerrar">
+        <svg
+          viewBox="0 0 24 24"
+          width="16"
+          height="16"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <line x1="6" y1="6" x2="18" y2="18" />
+          <line x1="18" y1="6" x2="6" y2="18" />
+        </svg>
+      </button>
     </div>
 
     {#if loading}
@@ -189,23 +216,25 @@
 
 <style>
   .stats-btn {
-    display: inline-flex;
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: 50%;
+    display: flex;
     align-items: center;
     justify-content: center;
-    width: 2.25rem;
-    height: 2.25rem;
     border: 1px solid var(--border);
-    border-radius: 999px;
-    background: var(--surface-alt);
-    color: var(--text-muted);
+    background: var(--surface);
+    color: var(--text);
+    padding: 0;
     cursor: pointer;
-    transition: background 0.15s, color 0.15s;
+  }
+
+  .stats-icon {
+    display: block;
   }
 
   .stats-btn:hover {
-    background: var(--primary);
-    color: #fff;
-    border-color: var(--primary);
+    background: var(--surface-alt);
   }
 
   .overlay {

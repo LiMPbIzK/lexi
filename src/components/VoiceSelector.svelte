@@ -36,6 +36,7 @@
     onclick={() => (open = !open)}
     aria-label="Seleccionar voz"
     aria-expanded={open}
+    title="Seleccionar voz de texto a voz (TTS)"
   >
     🗣️ <span class="voice-name">{currentLabel()}</span>
   </button>

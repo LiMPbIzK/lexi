@@ -37,7 +37,7 @@
   );
 </script>
 
-<span class="conn" role="status" aria-live="polite">
+<span class="conn" role="status" aria-live="polite" title={label}>
   <span class="dot {dotClass}" aria-hidden="true"></span>
   <span class="conn-label">{label}</span>
 </span>

@@ -7,12 +7,15 @@
   Cache-Control: public, max-age=0, must-revalidate
 
 # El Service Worker NUNCA debe cachearse o las actualizaciones no llegan.
+# CDN-Cache-Control controla la caché de borde del CDN en dominios personalizados.
 /sw.js
   Cache-Control: no-cache
+  CDN-Cache-Control: no-cache
 
 # El manifest no debe cachearse para reflejar cambios de iconos/screenshots.
 /manifest.webmanifest
   Cache-Control: no-cache
+  CDN-Cache-Control: no-cache
 
 # HTML sin caché (siempre sirve la última versión).
 /index.html

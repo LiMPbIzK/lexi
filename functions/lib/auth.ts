@@ -27,6 +27,22 @@ function newToken(): string {
 }
 
 /**
+ * Upsert de la fila `users` del dispositivo.
+ * El claim registra el device en `devices`, pero las tablas de datos
+ * (categories, cards, events) tienen FK a `users(id)`, así que sin esta fila
+ * la sincronización falla con FOREIGN KEY constraint.
+ */
+function upsertUser(env: Env, deviceId: string, displayName: string | null, now: number) {
+  return env.DB.prepare(
+    `INSERT INTO users (id, display_name, locale, voice_uri, theme, created_at, last_seen_at)
+     VALUES (?, ?, 'es', NULL, 'neutral', ?, ?)
+     ON CONFLICT(id) DO UPDATE SET
+       display_name = excluded.display_name,
+       last_seen_at = excluded.last_seen_at`
+  ).bind(deviceId, displayName, now, now);
+}
+
+/**
  * Devuelve el UUID del dispositivo o null si la cabecera falta/no es válida.
  */
 export function getDeviceId(request: Request): string | null {
@@ -89,17 +105,20 @@ export async function claimCode(
   if (normalized === DEMO_CODE) {
     const now = Date.now();
     try {
-      await env.DB.prepare(
-        `INSERT INTO devices (id, code, label, created_at, last_seen_at, mode, device_token, device_fingerprint)
-         VALUES (?, NULL, ?, ?, ?, 'demo', ?, ?)
-         ON CONFLICT(id) DO UPDATE SET
-           code = NULL,
-           label = excluded.label,
-           mode = 'demo',
-           device_token = excluded.device_token,
-           device_fingerprint = excluded.device_fingerprint,
-           last_seen_at = excluded.last_seen_at`
-      ).bind(deviceId, DEMO_LABEL, now, now, newToken(), deviceFingerprint).run();
+      await env.DB.batch([
+        env.DB.prepare(
+          `INSERT INTO devices (id, code, label, created_at, last_seen_at, mode, device_token, device_fingerprint)
+           VALUES (?, NULL, ?, ?, ?, 'demo', ?, ?)
+           ON CONFLICT(id) DO UPDATE SET
+             code = NULL,
+             label = excluded.label,
+             mode = 'demo',
+             device_token = excluded.device_token,
+             device_fingerprint = excluded.device_fingerprint,
+             last_seen_at = excluded.last_seen_at`
+        ).bind(deviceId, DEMO_LABEL, now, now, newToken(), deviceFingerprint),
+        upsertUser(env, deviceId, null, now)
+      ]);
     } catch (e) {
       console.error('claim demo error:', e);
       return { status: 'conflict', mode: 'demo' };
@@ -169,7 +188,8 @@ export async function claimCode(
              device_token = excluded.device_token,
              device_fingerprint = excluded.device_fingerprint,
              last_seen_at = excluded.last_seen_at`
-        ).bind(deviceId, normalized, row.label, now, now, deviceToken, deviceFingerprint)
+        ).bind(deviceId, normalized, row.label, now, now, deviceToken, deviceFingerprint),
+        upsertUser(env, deviceId, codeUser || null, now)
       ]);
     } catch {
       return { status: 'conflict', mode: 'full' };
@@ -195,7 +215,8 @@ export async function claimCode(
            device_token = excluded.device_token,
            device_fingerprint = excluded.device_fingerprint,
            last_seen_at = excluded.last_seen_at`
-      ).bind(deviceId, normalized, row.label, now, now, token, deviceFingerprint)
+      ).bind(deviceId, normalized, row.label, now, now, token, deviceFingerprint),
+      upsertUser(env, deviceId, codeUser || null, now)
     ]);
   } catch {
     return { status: 'conflict', mode: 'full' };

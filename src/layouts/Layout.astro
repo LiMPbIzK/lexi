@@ -3,6 +3,7 @@ import ThemeSelector from '../components/ThemeSelector.svelte';
 import VoiceSelector from '../components/VoiceSelector.svelte';
 import ConnectionStatus from '../components/ConnectionStatus.svelte';
 import FeedbackButton from '../components/FeedbackButton.svelte';
+import DonateButton from '../components/DonateButton.svelte';
 import UserGreeting from '../components/UserGreeting.svelte';
 import UsageStats from '../components/UsageStats.svelte';
 import '../styles/global.css';
@@ -53,6 +54,7 @@ const currentYear = new Date().getFullYear();
     <slot />
 
     <FeedbackButton />
+    <DonateButton />
 
     <footer class="footer">
       <p>LeXi — Comunicador AAC · © {currentYear}</p>

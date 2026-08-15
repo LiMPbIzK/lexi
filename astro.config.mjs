@@ -29,13 +29,13 @@ export default defineConfig({
         screenshots: [
           {
             src: '/screenshots/lexi-mobile.png',
-            sizes: '750x1334',
+            sizes: '410x917',
             type: 'image/png',
             form_factor: 'narrow'
           },
           {
             src: '/screenshots/lexi-desktop.png',
-            sizes: '1280x720',
+            sizes: '1919x966',
             type: 'image/png',
             form_factor: 'wide'
           }

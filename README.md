@@ -126,7 +126,7 @@ previsto hacia `card_translations(card_id, locale, label)` cuando llegue el ingl
 - [x] Teclado virtual en español + TTS
 - [x] Editor de tarjetas/tableros
 - [x] Sincronización offline-first y estadísticas
-- [ ] PWA instalable final + verificación del dominio
+- [x] PWA instalable final + verificación del dominio
 - [ ] Soporte inicial para inglés
 
 ## Licencia y Atribución

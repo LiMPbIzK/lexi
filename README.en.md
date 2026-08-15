@@ -123,7 +123,7 @@ Built for future i18n: `label` is monolingual for now, with a planned path towar
 - [x] Spanish on-screen keyboard + TTS
 - [x] Card/board editor
 - [x] Offline-first sync and usage stats
-- [ ] Final installable PWA + domain verification
+- [x] Final installable PWA + domain verification
 - [ ] Initial English support
 
 ## License and Attribution

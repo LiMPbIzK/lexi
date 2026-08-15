@@ -75,6 +75,14 @@ const currentYear = new Date().getFullYear();
     <script>
       const saved = localStorage.getItem('lexi:theme');
       if (saved) document.documentElement.dataset.theme = saved;
+
+      // Registro del Service Worker (PWA). El plugin no lo inyecta en SSG,
+      // así que se registra aquí, como hace registerSW.js por defecto.
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/sw.js', { scope: '/' }).catch(() => {});
+        });
+      }
     </script>
   </body>
 </html>

@@ -1,5 +1,10 @@
 <script lang="ts">
+  import { useStore } from '@nanostores/svelte-runes';
+  import { syncState, lastSyncAt } from '../stores';
+
   let online = $state<boolean>(typeof navigator !== 'undefined' ? navigator.onLine : true);
+  const s = useStore(syncState);
+  const last = useStore(lastSyncAt);
 
   function update() {
     online = navigator.onLine;
@@ -9,11 +14,32 @@
     window.addEventListener('online', update);
     window.addEventListener('offline', update);
   }
+
+  function formatTime(ts: number | null): string {
+    if (!ts) return '';
+    const d = new Date(ts);
+    return d.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+  }
+
+  let label = $derived(
+    !online ? 'Sin conexión'
+    : s.current === 'syncing' ? 'Sincronizando…'
+    : s.current === 'error' ? 'Pendiente de sincronizar'
+    : s.current === 'ok' ? `Al día · ${formatTime(last.current)}`
+    : ''
+  );
+
+  let dotClass = $derived(
+    !online ? 'offline'
+    : s.current === 'error' ? 'error'
+    : s.current === 'syncing' ? 'syncing'
+    : 'online'
+  );
 </script>
 
-<span class="conn" class:offline={!online} role="status" aria-live="polite">
-  <span class="dot" aria-hidden="true"></span>
-  <span class="conn-label">{online ? 'En línea' : 'Sin conexión'}</span>
+<span class="conn" role="status" aria-live="polite">
+  <span class="dot {dotClass}" aria-hidden="true"></span>
+  <span class="conn-label">{label}</span>
 </span>
 
 <style>
@@ -38,8 +64,28 @@
     background: var(--success);
   }
 
-  .conn.offline .dot {
+  .dot.offline {
     background: var(--error);
+  }
+
+  .dot.error {
+    background: var(--warning, #f59e0b);
+    animation: pulse-error 2s ease-in-out infinite;
+  }
+
+  .dot.syncing {
+    background: var(--info, #3b82f6);
+    animation: pulse-sync 1s ease-in-out infinite;
+  }
+
+  @keyframes pulse-error {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+
+  @keyframes pulse-sync {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
   }
 
   @media (max-width: 640px) {

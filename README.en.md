@@ -122,7 +122,7 @@ Built for future i18n: `label` is monolingual for now, with a planned path towar
 - [x] Card grid with sound (own audio or TTS)
 - [x] Spanish on-screen keyboard + TTS
 - [x] Card/board editor
-- [ ] Offline-first sync and usage stats
+- [x] Offline-first sync and usage stats
 - [ ] Final installable PWA + domain verification
 - [ ] Initial English support
 

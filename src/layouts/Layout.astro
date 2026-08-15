@@ -4,6 +4,7 @@ import VoiceSelector from '../components/VoiceSelector.svelte';
 import ConnectionStatus from '../components/ConnectionStatus.svelte';
 import FeedbackButton from '../components/FeedbackButton.svelte';
 import UserGreeting from '../components/UserGreeting.svelte';
+import UsageStats from '../components/UsageStats.svelte';
 import '../styles/global.css';
 import '../styles/themes.css';
 
@@ -38,6 +39,7 @@ const currentYear = new Date().getFullYear();
         <UserGreeting client:load />
         <VoiceSelector client:load />
         <ConnectionStatus client:load />
+        <UsageStats client:load />
         <ThemeSelector client:load />
       </div>
     </header>

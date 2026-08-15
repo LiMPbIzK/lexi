@@ -5,6 +5,8 @@
   import { speakEnd, cancelSpeech } from '../lib/tts';
   import { playCardAudioEnd, stopActiveAudio } from '../lib/audio';
   import { sentenceChunks } from '../lib/sentence';
+  import { db } from '../lib/db';
+  import { getUserId } from '../lib/user';
   import SpeedSelector from './SpeedSelector.svelte';
 
   const s = useStore(sentence);
@@ -69,6 +71,19 @@
   });
 
   async function speakSentence() {
+    // registrar evento de uso (local; se sincroniza con pushNow)
+    try {
+      await db.recordEvent({
+        id: crypto.randomUUID(),
+        user_id: getUserId(),
+        card_id: null,
+        verb: 'hablar',
+        at: Date.now()
+      });
+    } catch {
+      /* no crítico */
+    }
+
     // re-sincronizar contra el estado actual de las tarjetas antes de reproducir:
     // si un audio personalizado se quitó, la palabra sonará con TTS
     syncSentenceWithCards(cards.get());

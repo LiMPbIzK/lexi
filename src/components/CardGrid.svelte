@@ -5,7 +5,7 @@
   import { seedArasaac, isSeeded, hasCatalog } from '../lib/seed';
   import { getDeviceMode, saveDeviceMode, fetchDeviceStatus } from '../lib/user';
   import { warmFingerprint } from '../lib/fingerprint';
-  import { syncNow } from '../lib/sync';
+  import { syncNow, setupSyncListeners } from '../lib/sync';
   import { activeCategoryId, categories, cards, manifest, sentence, syncSentenceWithCards, deviceMode, userName } from '../stores';
   import type { ArasaacManifest, Card } from '../lib/types';
   import CardTile from './CardTile.svelte';
@@ -139,6 +139,8 @@
       await ensureSeeded();
       // restaurar datos del dispositivo desde la nube + subir cambios/audio pendientes
       await syncNow();
+      // activar reintentos al volver a estar en línea
+      setupSyncListeners(() => void syncNow());
       const cats = await db.getCategories();
       categories.set(cats);
       if (cats.length > 0) {

@@ -62,6 +62,20 @@
         updated_at: Date.now()
       };
       await db.putCard(updated);
+
+      // registrar evento de edición (local; se sincroniza con pushNow)
+      try {
+        await db.recordEvent({
+          id: crypto.randomUUID(),
+          user_id: getUserId(),
+          card_id: card.id,
+          verb: 'editar',
+          at: Date.now()
+        });
+      } catch {
+        /* no crítico */
+      }
+
       onSaved?.();
       onClose();
     } catch {

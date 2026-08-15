@@ -62,6 +62,11 @@ export const deviceMode = atom<'full' | 'demo' | null>(null);
 // Nombre de usuario del código canjeado (para "Bienvenido, {user}")
 export const userName = atom<string | null>(null);
 
+// --- Estado de sincronización ---
+
+export const syncState = atom<'idle' | 'syncing' | 'ok' | 'error'>('idle');
+export const lastSyncAt = atom<number | null>(null);
+
 /**
  * Re-sincroniza las palabras de la frase contra el estado actual de las tarjetas.
  * Si una tarjeta perdió su audio personalizado, la palabra deja de estar marcada

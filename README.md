@@ -125,7 +125,7 @@ previsto hacia `card_translations(card_id, locale, label)` cuando llegue el ingl
 - [x] Grid de tarjetas con sonido (audio propio o TTS)
 - [x] Teclado virtual en español + TTS
 - [x] Editor de tarjetas/tableros
-- [ ] Sincronización offline-first y estadísticas
+- [x] Sincronización offline-first y estadísticas
 - [ ] PWA instalable final + verificación del dominio
 - [ ] Soporte inicial para inglés
 

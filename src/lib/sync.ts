@@ -7,6 +7,7 @@ import { db } from './db';
 import { getUserId } from './user';
 import { getCachedFingerprint } from './fingerprint';
 import { uploadAudio } from './audio';
+import { syncState, lastSyncAt } from '../stores';
 import type { Card } from './types';
 
 let syncing = false;
@@ -121,11 +122,21 @@ async function flushPendingUploads(): Promise<void> {
 export async function syncNow(): Promise<boolean> {
   if (syncing) return false;
   syncing = true;
+  syncState.set('syncing');
   try {
     await flushPendingUploads();
     const pushed = await pushNow();
-    await pullNow();
+    const pulled = await pullNow();
+    if (pushed || pulled) {
+      syncState.set('ok');
+      lastSyncAt.set(Date.now());
+    } else {
+      syncState.set('error');
+    }
     return pushed;
+  } catch {
+    syncState.set('error');
+    return false;
   } finally {
     syncing = false;
   }
@@ -142,15 +153,4 @@ export function setupSyncListeners(onSynced?: () => void): void {
   };
 
   window.addEventListener('online', attempt);
-
-  // Background Sync (si el navegador lo soporta)
-  if ('serviceWorker' in navigator && 'SyncManager' in window) {
-    void navigator.serviceWorker.ready.then(async (reg) => {
-      try {
-        await (reg as unknown as { sync: { register: (t: string) => Promise<void> } }).sync.register('lexi-sync');
-      } catch {
-        /* no soportado */
-      }
-    });
-  }
 }
